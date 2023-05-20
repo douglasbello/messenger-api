@@ -10,7 +10,7 @@ import java.util.UUID;
 public class FriendshipRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
@@ -22,17 +22,17 @@ public class FriendshipRequest {
     public FriendshipRequest() {
     }
 
-    public FriendshipRequest(int id, User sender, User receiver) {
+    public FriendshipRequest(Integer id, User sender, User receiver) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

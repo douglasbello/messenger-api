@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
@@ -23,15 +23,15 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(int id) {
+    public Chat(Integer id) {
         this.id = id;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,12 +43,13 @@ public class Chat {
         return participants;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chat chat = (Chat) o;
-        return id == chat.id;
+        return Objects.equals(id, chat.id);
     }
 
     @Override

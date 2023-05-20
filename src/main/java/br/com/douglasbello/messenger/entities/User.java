@@ -17,7 +17,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private String imgUrl;
@@ -52,17 +52,17 @@ public class User implements Serializable {
     public User() {
     }
    
-    public User(int id, String username, String password) {
+    public User(Integer id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -107,7 +107,7 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id;
+        return Objects.equals(id, user.id);
     }
 
     @Override

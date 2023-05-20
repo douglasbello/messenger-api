@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import br.com.douglasbello.messenger.entities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 }

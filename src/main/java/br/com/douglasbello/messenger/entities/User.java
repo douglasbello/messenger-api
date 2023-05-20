@@ -102,6 +102,10 @@ public class User implements Serializable {
         return friendshipRequestsReceived;
     }
 
+    public List<Chat> getChats() {
+        return chats;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

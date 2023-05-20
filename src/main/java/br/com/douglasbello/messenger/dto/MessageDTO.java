@@ -1,41 +1,30 @@
-package br.com.douglasbello.messenger.entities;
+package br.com.douglasbello.messenger.dto;
 
-import jakarta.persistence.*;
+import br.com.douglasbello.messenger.entities.Chat;
+import br.com.douglasbello.messenger.entities.Message;
+import br.com.douglasbello.messenger.entities.User;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "tb_messages")
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class MessageDTO {
     private Integer id;
     private String messageText;
-
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
     private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
     private User receiver;
-
     private LocalDateTime sentAt;
-
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
     private Chat chat;
 
-    public Message() {
+    public MessageDTO() {
     }
 
-    public Message(Integer id, String messageText, User sender, User receiver, LocalDateTime sentAt) {
-        this.id = id;
-        this.messageText = messageText;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.sentAt = LocalDateTime.now();
+    public MessageDTO(Message entity) {
+        this.id = entity.getId();
+        this.messageText = entity.getMessageText();
+        this.sender = entity.getSender();
+        this.receiver = entity.getReceiver();
+        this.sentAt = entity.getSentAt();
+        this.chat = entity.getChat();
     }
 
     public Integer getId() {
@@ -82,12 +71,16 @@ public class Message {
         return chat;
     }
 
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
-        return id == message.id;
+        MessageDTO that = (MessageDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -97,12 +90,13 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
+        return "MessageDTO{" +
                 "id=" + id +
                 ", messageText='" + messageText + '\'' +
                 ", sender=" + sender +
                 ", receiver=" + receiver +
                 ", sentAt=" + sentAt +
+                ", chat=" + chat +
                 '}';
     }
 }

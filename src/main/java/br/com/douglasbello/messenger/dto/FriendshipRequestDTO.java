@@ -1,30 +1,22 @@
-package br.com.douglasbello.messenger.entities;
+package br.com.douglasbello.messenger.dto;
 
-import jakarta.persistence.*;
+import br.com.douglasbello.messenger.entities.FriendshipRequest;
+import br.com.douglasbello.messenger.entities.User;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "tb_friendship_request")
-public class FriendshipRequest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FriendshipRequestDTO {
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
     private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
     private User receiver;
 
-    public FriendshipRequest() {
+    public FriendshipRequestDTO() {
     }
 
-    public FriendshipRequest(Integer id, User sender, User receiver) {
-        this.id = id;
-        this.sender = sender;
-        this.receiver = receiver;
+    public FriendshipRequestDTO(FriendshipRequest entity) {
+        this.id = entity.getId();
+        this.sender = entity.getSender();
+        this.receiver = entity.getReceiver();
     }
 
     public Integer getId() {
@@ -55,21 +47,12 @@ public class FriendshipRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FriendshipRequest that = (FriendshipRequest) o;
+        FriendshipRequestDTO that = (FriendshipRequestDTO) o;
         return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "FriendshipRequest{" +
-                "id=" + id +
-                ", sender=" + sender +
-                ", receiver=" + receiver +
-                '}';
     }
 }

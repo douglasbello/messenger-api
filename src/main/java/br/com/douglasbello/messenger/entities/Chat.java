@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_chats")
@@ -17,7 +16,7 @@ public class Chat {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    @ManyToMany(mappedBy = "chats")
+    @ManyToMany(mappedBy = "chats", cascade = CascadeType.ALL)
     private List<User> participants = new ArrayList<>();
 
     public Chat() {
@@ -42,7 +41,6 @@ public class Chat {
     public List<User> getParticipants() {
         return participants;
     }
-
 
     @Override
     public boolean equals(Object o) {

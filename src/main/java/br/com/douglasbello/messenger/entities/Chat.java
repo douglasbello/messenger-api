@@ -11,24 +11,27 @@ import java.util.UUID;
 @Table(name = "tb_chats")
 public class Chat {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    @ElementCollection
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
+
+    @ManyToMany(mappedBy = "chats")
     private List<User> participants = new ArrayList<>();
 
     public Chat() {
     }
 
-    public Chat(UUID id) {
+    public Chat(int id) {
         this.id = id;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -36,8 +39,8 @@ public class Chat {
         return messages;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<User> getParticipants() {
+        return participants;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class Chat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chat chat = (Chat) o;
-        return id.equals(chat.id);
+        return id == chat.id;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class Chat {
     public String toString() {
         return "Chat{" +
                 "id=" + id +
-                ", users=" + users +
+                ", users=" + participants +
                 '}';
     }
 }

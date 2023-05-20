@@ -4,23 +4,33 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_messages")
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String messageText;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
     private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
     private User receiver;
+
     private LocalDateTime sentAt;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
 
     public Message() {
     }
 
-    public Message(UUID id, String messageText, User sender, User receiver, LocalDateTime sentAt) {
+    public Message(int id, String messageText, User sender, User receiver, LocalDateTime sentAt) {
         this.id = id;
         this.messageText = messageText;
         this.sender = sender;
@@ -28,11 +38,11 @@ public class Message {
         this.sentAt = LocalDateTime.now();
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -68,12 +78,13 @@ public class Message {
         this.sentAt = sentAt;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return id.equals(message.id);
+        return id == message.id;
     }
 
     @Override

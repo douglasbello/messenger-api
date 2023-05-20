@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import jakarta.persistence.*;
 
@@ -17,34 +16,53 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String username;
     private String password;
     private String imgUrl;
     @ManyToMany
     @JoinTable(
-            name = "friendship",
+            name = "tb_friendship",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<User> friends;
 
-    private List<FriendshipRequest> friendshipRequestsSended;
+    @ManyToMany
+    @JoinTable(
+            name = "tb_chats",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id")
+    )
+    private List<Chat> chats = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Message> messagesSent = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private List<Message> messagesReceived = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<FriendshipRequest> friendshipRequestsSent = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private List<FriendshipRequest> friendshipRequestsReceived = new ArrayList<>();
     public User() {
     }
    
-    public User(UUID id, String username, String password) {
+    public User(int id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -72,12 +90,24 @@ public class User implements Serializable {
         this.imgUrl = imgUrl;
     }
 
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public List<FriendshipRequest> getFriendshipRequestsSent() {
+        return friendshipRequestsSent;
+    }
+
+    public List<FriendshipRequest> getFriendshipRequestsReceived() {
+        return friendshipRequestsReceived;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-        return id.equals(user.id);
+        User user = (User) o;
+        return id == user.id;
     }
 
     @Override

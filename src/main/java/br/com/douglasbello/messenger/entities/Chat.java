@@ -1,12 +1,11 @@
 package br.com.douglasbello.messenger.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_chats")
@@ -20,8 +19,13 @@ public class Chat implements Serializable {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    @ManyToMany(mappedBy = "chats", cascade = CascadeType.ALL)
-    private List<User> participants = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "tb_chats_and_participants",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> participants = new HashSet<>();
 
     public Chat() {
     }
@@ -42,7 +46,7 @@ public class Chat implements Serializable {
         return messages;
     }
 
-    public List<User> getParticipants() {
+    public Set<User> getParticipants() {
         return participants;
     }
 

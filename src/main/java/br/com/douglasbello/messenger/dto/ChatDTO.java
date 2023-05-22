@@ -6,11 +6,12 @@ import br.com.douglasbello.messenger.entities.User;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ChatDTO {
     public Integer id;
     public List<Message> messages;
-    public List<User> participants;
+    public Set<User> participants;
 
     public ChatDTO() {
     }
@@ -33,7 +34,7 @@ public class ChatDTO {
         return messages;
     }
 
-    public List<User> getParticipants() {
+    public Set<User> getParticipants() {
         return participants;
     }
 

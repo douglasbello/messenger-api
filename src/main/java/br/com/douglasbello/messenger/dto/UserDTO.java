@@ -4,19 +4,17 @@ import br.com.douglasbello.messenger.entities.Chat;
 import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class UserDTO {
     private Integer id;
     private String username;
     private String password;
     private String imgUrl;
-    private List<User> friends;
-    private List<Chat> chats;
-    private List<FriendshipRequest> friendshipRequestsSent = new ArrayList<>();
-    private List<FriendshipRequest> friendshipRequestsReceived = new ArrayList<>();
+    private Set<User> friends = new HashSet<>();
+    private Set<Chat> chats = new HashSet<>();
+    private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
+    private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
 
     public UserDTO() {
     }
@@ -28,6 +26,8 @@ public class UserDTO {
         this.imgUrl = entity.getImgUrl();
         this.friends = entity.getFriends();
         this.chats = entity.getChats();
+        this.friendshipRequestsSent = entity.getFriendshipRequestsSent();
+        this.friendshipRequestsReceived = entity.getFriendshipRequestsReceived();
     }
 
     public Integer getId() {
@@ -62,19 +62,19 @@ public class UserDTO {
         this.imgUrl = imgUrl;
     }
 
-    public List<User> getFriends() {
+    public Set<User> getFriends() {
         return friends;
     }
 
-    public List<Chat> getChats() {
+    public Set<Chat> getChats() {
         return chats;
     }
 
-    public List<FriendshipRequest> getFriendshipRequestsSent() {
+    public Set<FriendshipRequest> getFriendshipRequestsSent() {
         return friendshipRequestsSent;
     }
 
-    public List<FriendshipRequest> getFriendshipRequestsReceived() {
+    public Set<FriendshipRequest> getFriendshipRequestsReceived() {
         return friendshipRequestsReceived;
     }
 

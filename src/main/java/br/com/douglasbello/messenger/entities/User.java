@@ -2,9 +2,7 @@ package br.com.douglasbello.messenger.entities;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -28,17 +26,10 @@ public class User implements Serializable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-    private List<User> friends;
+    private Set<User> friends = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "tb_chats_and_participants",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "chat_id")
-    )
-    private List<Chat> chats = new ArrayList<>();
-
+    @ManyToMany(mappedBy = "participants")
+    private Set<Chat> chats = new HashSet<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Message> messagesSent = new ArrayList<>();
@@ -47,10 +38,10 @@ public class User implements Serializable {
     private List<Message> messagesReceived = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<FriendshipRequest> friendshipRequestsSent = new ArrayList<>();
+    private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private List<FriendshipRequest> friendshipRequestsReceived = new ArrayList<>();
+    private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
     public User() {
     }
    
@@ -92,19 +83,19 @@ public class User implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public List<User> getFriends() {
+    public Set<User> getFriends() {
         return friends;
     }
 
-    public List<FriendshipRequest> getFriendshipRequestsSent() {
+    public Set<FriendshipRequest> getFriendshipRequestsSent() {
         return friendshipRequestsSent;
     }
 
-    public List<FriendshipRequest> getFriendshipRequestsReceived() {
+    public Set<FriendshipRequest> getFriendshipRequestsReceived() {
         return friendshipRequestsReceived;
     }
 
-    public List<Chat> getChats() {
+    public Set<Chat> getChats() {
         return chats;
     }
 

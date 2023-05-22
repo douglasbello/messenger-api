@@ -1,5 +1,6 @@
 package br.com.douglasbello.messenger.entities;
 
+import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -18,13 +19,16 @@ public class FriendshipRequest {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    private Integer status;
+
     public FriendshipRequest() {
     }
 
-    public FriendshipRequest(Integer id, User sender, User receiver) {
+    public FriendshipRequest(Integer id, User sender, User receiver, FriendshipRequestStatus status) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
+        setStatus(status);
     }
 
     public Integer getId() {
@@ -49,6 +53,16 @@ public class FriendshipRequest {
 
     public void setReceiver(User receiver) {
         this.receiver = receiver;
+    }
+
+    public FriendshipRequestStatus getStatus() {
+        return FriendshipRequestStatus.valueOf(status);
+    }
+
+    public void setStatus(FriendshipRequestStatus status) {
+        if (status != null) {
+            this.status = status.getCode();
+        }
     }
 
     @Override

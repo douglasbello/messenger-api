@@ -53,6 +53,7 @@ public class InsertTest implements CommandLineRunner {
         chatService.insert(chat1);
 
         Message message = new Message(null,"bom dia!",user1,user2,chat1);
-        messageService.insert(message);
+        chatService.addMessageToChat(chat1,message);
+        chatService.insert(chat1);
     }
 }

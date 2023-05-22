@@ -17,7 +17,7 @@ public class Chat implements Serializable {
     private Integer id;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

@@ -3,6 +3,7 @@ package br.com.douglasbello.messenger.entities;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String imgUrl;
+
     @ManyToMany
     @JoinTable(
             name = "tb_friendship",
@@ -28,18 +30,23 @@ public class User implements Serializable {
     )
     private Set<User> friends = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "participants")
     private Set<Chat> chats = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Message> messagesSent = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<Message> messagesReceived = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
     public User() {
@@ -97,6 +104,11 @@ public class User implements Serializable {
 
     public Set<Chat> getChats() {
         return chats;
+    }
+
+    public Set<Integer> getChatsIds() {
+        Set<Integer> ids = chats.stream().map(Chat::getId).collect(Collectors.toSet());
+        return ids;
     }
 
     @Override

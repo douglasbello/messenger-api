@@ -1,7 +1,5 @@
 package br.com.douglasbello.messenger.dto;
 
-import br.com.douglasbello.messenger.entities.Chat;
-import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 
 import java.util.*;
@@ -12,9 +10,8 @@ public class UserDTO {
     private String password;
     private String imgUrl;
     private Set<User> friends = new HashSet<>();
-    private Set<Chat> chats = new HashSet<>();
-    private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
-    private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
+
+    private Set<Integer> chats = new HashSet<>();
 
     public UserDTO() {
     }
@@ -25,9 +22,7 @@ public class UserDTO {
         this.password = entity.getPassword();
         this.imgUrl = entity.getImgUrl();
         this.friends = entity.getFriends();
-        this.chats = entity.getChats();
-        this.friendshipRequestsSent = entity.getFriendshipRequestsSent();
-        this.friendshipRequestsReceived = entity.getFriendshipRequestsReceived();
+        this.chats = entity.getChatsIds();
     }
 
     public Integer getId() {
@@ -66,16 +61,8 @@ public class UserDTO {
         return friends;
     }
 
-    public Set<Chat> getChats() {
+    public Set<Integer> getChats() {
         return chats;
-    }
-
-    public Set<FriendshipRequest> getFriendshipRequestsSent() {
-        return friendshipRequestsSent;
-    }
-
-    public Set<FriendshipRequest> getFriendshipRequestsReceived() {
-        return friendshipRequestsReceived;
     }
 
     @Override
@@ -98,9 +85,6 @@ public class UserDTO {
                 ", username='" + username + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", friends=" + friends +
-                ", chats=" + chats +
-                ", friendshipRequestsSent=" + friendshipRequestsSent +
-                ", friendshipRequestsReceived=" + friendshipRequestsReceived +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package br.com.douglasbello.messenger.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class Message {
 
     private LocalDateTime sentAt;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
@@ -30,11 +32,12 @@ public class Message {
     public Message() {
     }
 
-    public Message(Integer id, String messageText, User sender, User receiver, LocalDateTime sentAt) {
+    public Message(Integer id, String messageText, User sender, User receiver, Chat chat) {
         this.id = id;
         this.messageText = messageText;
         this.sender = sender;
         this.receiver = receiver;
+        this.chat = chat;
         this.sentAt = LocalDateTime.now();
     }
 
@@ -65,6 +68,7 @@ public class Message {
     public User getReceiver() {
         return receiver;
     }
+
 
     public void setReceiver(User receiver) {
         this.receiver = receiver;

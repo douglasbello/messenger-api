@@ -13,7 +13,7 @@ public class MessageDTO {
     private User sender;
     private User receiver;
     private LocalDateTime sentAt;
-    private Chat chat;
+    private Integer chat;
 
     public MessageDTO() {
     }
@@ -24,7 +24,7 @@ public class MessageDTO {
         this.sender = entity.getSender();
         this.receiver = entity.getReceiver();
         this.sentAt = entity.getSentAt();
-        this.chat = entity.getChat();
+        this.chat = entity.getChat().getId();
     }
 
     public Integer getId() {
@@ -67,11 +67,11 @@ public class MessageDTO {
         this.sentAt = sentAt;
     }
 
-    public Chat getChat() {
+    public Integer getChat() {
         return chat;
     }
 
-    public void setChat(Chat chat) {
+    public void setChat(Integer chat) {
         this.chat = chat;
     }
 

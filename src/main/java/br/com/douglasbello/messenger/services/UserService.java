@@ -2,6 +2,7 @@ package br.com.douglasbello.messenger.services;
 
 import java.util.List;
 
+import br.com.douglasbello.messenger.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
 import br.com.douglasbello.messenger.entities.User;
@@ -16,11 +17,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        List<User> result = userRepository.findAll();
+        return result.stream().map(UserDTO::new).toList();
     }
 
-    public User insert(User user) {
-        return userRepository.save(user);
+    public UserDTO insert(User obj) {
+        UserDTO result = new UserDTO(userRepository.save(obj));
+        return result;
+    }
+
+    public void insertAll(List<User> users) {
+        userRepository.saveAll(users);
     }
 }

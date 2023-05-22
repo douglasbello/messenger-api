@@ -3,6 +3,7 @@ package br.com.douglasbello.messenger.controllers;
 import java.net.URI;
 import java.util.List;
 
+import br.com.douglasbello.messenger.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +25,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<List<UserDTO>> findAll() {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
     @PostMapping(value = "/insert")
-    public ResponseEntity<User> insert(@RequestBody User obj) {
-        obj = userService.insert(obj);
+    public ResponseEntity<UserDTO> insert(@RequestBody User obj) {
+        UserDTO result = userService.insert(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(result);
     }
 }

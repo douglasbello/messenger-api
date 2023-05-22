@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -29,9 +30,10 @@ public class User implements Serializable {
     )
     private List<User> friends;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "tb_chats",
+            name = "tb_chats_and_participants",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id")
     )

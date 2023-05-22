@@ -1,5 +1,7 @@
 package br.com.douglasbello.messenger.config;
 
+import br.com.douglasbello.messenger.entities.Chat;
+import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.services.ChatService;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
@@ -37,5 +39,13 @@ public class InsertTest implements CommandLineRunner {
 
         userService.insertAll(Arrays.asList(user1,user2));
 
+        FriendshipRequest friendshipRequest1 = new FriendshipRequest(null, user1,user2);
+        friendshipRequestService.insert(friendshipRequest1);
+
+//        Chat chat1 = new Chat(null);
+//        chatService.insert(chat1);
+
+        Chat chat1 = new Chat();
+        chatService.insert(chat1);
     }
 }

@@ -24,7 +24,7 @@ public class User implements Serializable {
 
     @ManyToMany
     @JoinTable(
-            name = "tb_friendship",
+            name = "tb_user_friends",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )

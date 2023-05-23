@@ -2,6 +2,7 @@ package br.com.douglasbello.messenger.dto;
 
 import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
+import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 
 import java.util.Objects;
 
@@ -10,6 +11,8 @@ public class FriendshipRequestDTO {
     private User sender;
     private User receiver;
 
+    private FriendshipRequestStatus status;
+
     public FriendshipRequestDTO() {
     }
 
@@ -17,6 +20,7 @@ public class FriendshipRequestDTO {
         this.id = entity.getId();
         this.sender = entity.getSender();
         this.receiver = entity.getReceiver();
+        this.status = entity.getStatus();
     }
 
     public Integer getId() {
@@ -41,6 +45,14 @@ public class FriendshipRequestDTO {
 
     public void setReceiver(User receiver) {
         this.receiver = receiver;
+    }
+
+    public FriendshipRequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FriendshipRequestStatus status) {
+        this.status = status;
     }
 
     @Override

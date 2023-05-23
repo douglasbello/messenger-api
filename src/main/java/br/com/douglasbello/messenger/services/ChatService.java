@@ -4,6 +4,7 @@ import br.com.douglasbello.messenger.dto.ChatDTO;
 import br.com.douglasbello.messenger.entities.Chat;
 import br.com.douglasbello.messenger.entities.Message;
 import br.com.douglasbello.messenger.repositories.ChatRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +30,26 @@ public class ChatService {
         return chatDTO;
     }
 
-    public void addMessageToChat(Chat chat, Message message) {
+    private void updateData(Chat entity, Chat obj) {
+        entity.setId(obj.getId());
+        entity.getParticipants().addAll(obj.getParticipants());
+        entity.getMessages().addAll(obj.getMessages());
+    }
+
+    public ChatDTO update(Integer id, Chat obj) {
+        try {
+            Chat entity = chatRepository.getReferenceById(id);
+            updateData(entity,obj);
+            return new ChatDTO(chatRepository.save(entity));
+        } catch (EntityNotFoundException e) {
+           throw new EntityNotFoundException();
+        }
+    }
+
+    public void addMessageToChat(Message message) {
         messageService.insert(message);
+        Chat chat = message.getChat();
         chat.getMessages().add(message);
+        insert(chat);
     }
 }

@@ -1,12 +1,12 @@
 package br.com.douglasbello.messenger.config;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
+import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.entities.Chat;
 import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.Message;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
-import br.com.douglasbello.messenger.repositories.UserRepository;
 import br.com.douglasbello.messenger.services.ChatService;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import br.com.douglasbello.messenger.services.MessageService;
@@ -14,8 +14,6 @@ import br.com.douglasbello.messenger.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import java.util.Arrays;
 
 @Configuration
 @Profile("test")
@@ -41,7 +39,8 @@ public class InsertTest implements CommandLineRunner {
         User user1 = new User(null, "user01", "user01");
         User user2 = new User(null, "user02", "user02");
 
-        userService.insertAll(Arrays.asList(user1,user2));
+        UserDTO objDTO = userService.insert(user1);
+        userService.insert(user2);
 
         FriendshipRequest friendshipRequest1 = new FriendshipRequest(null, user1,user2, FriendshipRequestStatus.WAITING_RESPONSE);
         FriendshipRequestDTO friendshipRequestDTO = friendshipRequestService.insert(friendshipRequest1);
@@ -62,7 +61,8 @@ public class InsertTest implements CommandLineRunner {
         Message message2 = new Message(null,"good night",user2,user1,chat1);
         chatService.addMessageToChat(message2);
 
-        result.setStatus(FriendshipRequestStatus.DECLINED);
+        result.setStatus(FriendshipRequestStatus.ACCEPTED);
         friendshipRequestService.acceptFriendRequest(1);
+        System.out.println(userService.getAllFriendsByUserId(1));
     }
 }

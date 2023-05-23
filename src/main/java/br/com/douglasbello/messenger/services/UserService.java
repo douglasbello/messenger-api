@@ -2,10 +2,9 @@ package br.com.douglasbello.messenger.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import br.com.douglasbello.messenger.dto.UserDTO;
-import br.com.douglasbello.messenger.entities.FriendshipRequest;
-import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +56,10 @@ public class UserService {
         entity.setUsername(obj.getUsername());
         entity.setPassword(obj.getPassword());
         entity.setImgUrl(obj.getImgUrl());
+    }
+
+    public Set<User> getAllFriendsByUserId(Integer userId) {
+        Set<User> friends = userRepository.findFriendsById(userId);
+        return friends;
     }
 }

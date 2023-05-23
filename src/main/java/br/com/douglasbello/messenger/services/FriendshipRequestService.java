@@ -5,7 +5,9 @@ import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import br.com.douglasbello.messenger.repositories.FriendshipRequestRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class FriendshipRequestService {
     private final FriendshipRequestRepository friendshipRequestRepository;
 
     private final UserService userService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     public FriendshipRequestService(FriendshipRequestRepository friendshipRequestRepository, UserService userService) {
@@ -81,8 +86,9 @@ public class FriendshipRequestService {
         FriendshipRequest friendshipRequest = findById(id);
         User receiver = userService.findById(friendshipRequest.getReceiver().getId());
         User sender = userService.findById(friendshipRequest.getSender().getId());
-        receiver.getFriends().add(sender);
+        receiver.addFriend(sender);
+        friendshipRequest.setStatus(FriendshipRequestStatus.ACCEPTED);
         update(id, friendshipRequest);
-        userService.insert(receiver);
+        userService.update(receiver.getId(), receiver);
     }
 }

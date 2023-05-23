@@ -30,6 +30,11 @@ public class User implements Serializable {
     )
     private Set<User> friends = new HashSet<>();
 
+    public void addFriend(User friend) {
+        friends.add(friend);
+        friend.getFriends().add(this);
+    }
+
     @JsonIgnore
     @ManyToMany(mappedBy = "participants")
     private Set<Chat> chats = new HashSet<>();
@@ -49,6 +54,7 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
+
     public User() {
     }
    

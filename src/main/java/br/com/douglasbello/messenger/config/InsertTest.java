@@ -15,6 +15,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.util.Arrays;
+
 @Configuration
 @Profile("test")
 public class InsertTest implements CommandLineRunner {
@@ -32,15 +34,13 @@ public class InsertTest implements CommandLineRunner {
         this.chatService = chatService;
     }
 
-
     @Override
     public void run(String... args) throws Exception {
 
         User user1 = new User(null, "user01", "user01");
         User user2 = new User(null, "user02", "user02");
 
-        UserDTO objDTO = userService.insert(user1);
-        userService.insert(user2);
+        userService.insertAll(Arrays.asList(user1, user2));
 
         FriendshipRequest friendshipRequest1 = new FriendshipRequest(null, user1,user2, FriendshipRequestStatus.WAITING_RESPONSE);
         FriendshipRequestDTO friendshipRequestDTO = friendshipRequestService.insert(friendshipRequest1);

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +22,7 @@ public class User implements Serializable {
     private String password;
     private String imgUrl;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "tb_user_friends",
@@ -29,11 +30,6 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<User> friends = new HashSet<>();
-
-    public void addFriend(User friend) {
-        friends.add(friend);
-        friend.getFriends().add(this);
-    }
 
     @JsonIgnore
     @ManyToMany(mappedBy = "participants")
@@ -57,7 +53,7 @@ public class User implements Serializable {
 
     public User() {
     }
-   
+
     public User(Integer id, String username, String password) {
         this.id = id;
         this.username = username;
@@ -115,6 +111,14 @@ public class User implements Serializable {
     public Set<Integer> getChatsIds() {
         Set<Integer> ids = chats.stream().map(Chat::getId).collect(Collectors.toSet());
         return ids;
+    }
+
+    public List<Message> getMessagesSent() {
+        return messagesSent;
+    }
+
+    public List<Message> getMessagesReceived() {
+        return messagesReceived;
     }
 
     @Override

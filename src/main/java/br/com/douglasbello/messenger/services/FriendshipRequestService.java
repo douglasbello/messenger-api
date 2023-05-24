@@ -86,9 +86,11 @@ public class FriendshipRequestService {
         FriendshipRequest friendshipRequest = findById(id);
         User receiver = userService.findById(friendshipRequest.getReceiver().getId());
         User sender = userService.findById(friendshipRequest.getSender().getId());
-        receiver.addFriend(sender);
+        receiver.getFriends().add(sender);
+        sender.getFriends().add(receiver);
         friendshipRequest.setStatus(FriendshipRequestStatus.ACCEPTED);
         update(id, friendshipRequest);
         userService.update(receiver.getId(), receiver);
+        userService.update(sender.getId(), sender);
     }
 }

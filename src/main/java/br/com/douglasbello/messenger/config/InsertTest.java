@@ -61,8 +61,8 @@ public class InsertTest implements CommandLineRunner {
         Message message2 = new Message(null,"good night",user2,user1,chat1);
         chatService.addMessageToChat(message2);
 
-        result.setStatus(FriendshipRequestStatus.ACCEPTED);
-        friendshipRequestService.acceptFriendRequest(1);
-        System.out.println(userService.getAllFriendsByUserId(1));
+//        result.setStatus(FriendshipRequestStatus.ACCEPTED);
+//        friendshipRequestService.acceptFriendRequest(friendshipRequest1.getReceiver().getId(), friendshipRequest1.getId());
+//        System.out.println(userService.getAllFriendsByUserId(1));
     }
 }

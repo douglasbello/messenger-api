@@ -1,6 +1,7 @@
 package br.com.douglasbello.messenger.services;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
+import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
@@ -13,8 +14,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FriendshipRequestService {
@@ -32,15 +33,15 @@ public class FriendshipRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<FriendshipRequestDTO> findAll() {
+    public Set<FriendshipRequestDTO> findAll() {
         List<FriendshipRequest> result = friendshipRequestRepository.findAll();
-        return result.stream().map(FriendshipRequestDTO::new).toList();
+        return result.stream().map(FriendshipRequestDTO::new).collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)
     public FriendshipRequest findById(Integer id) {
         Optional<FriendshipRequest> obj = friendshipRequestRepository.findById(id);
-        return obj.orElseThrow(RuntimeException::new);
+        return obj.get();
     }
 
     @Transactional
@@ -82,15 +83,23 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public void acceptFriendRequest(Integer id) {
-        FriendshipRequest friendshipRequest = findById(id);
-        User receiver = userService.findById(friendshipRequest.getReceiver().getId());
-        User sender = userService.findById(friendshipRequest.getSender().getId());
-        receiver.getFriends().add(sender);
-        sender.getFriends().add(receiver);
-        friendshipRequest.setStatus(FriendshipRequestStatus.ACCEPTED);
-        update(id, friendshipRequest);
-        userService.update(receiver.getId(), receiver);
-        userService.update(sender.getId(), sender);
+    public boolean acceptFriendRequest(Integer receiverId, Integer requestId) {
+        try {
+            FriendshipRequest friendshipRequest = findById(requestId);
+            if (friendshipRequest != null && Objects.equals(receiverId, friendshipRequest.getReceiver().getId())) {
+                User receiver = userService.findById(friendshipRequest.getReceiver().getId());
+                User sender = userService.findById(friendshipRequest.getSender().getId());
+                receiver.getFriends().add(sender);
+                sender.getFriends().add(receiver);
+                friendshipRequest.setStatus(FriendshipRequestStatus.ACCEPTED);
+                update(requestId, friendshipRequest);
+                userService.update(receiver.getId(), receiver);
+                userService.update(sender.getId(), sender);
+                return true;
+            }
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return false;
     }
 }

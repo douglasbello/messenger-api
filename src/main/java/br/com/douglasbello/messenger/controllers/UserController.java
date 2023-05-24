@@ -2,14 +2,13 @@ package br.com.douglasbello.messenger.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
+import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
+import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.douglasbello.messenger.entities.User;
@@ -20,19 +19,43 @@ import br.com.douglasbello.messenger.services.UserService;
 public class UserController {
     private final UserService userService;
 
-    private UserController(UserService userService) {
+    private final FriendshipRequestService friendshipRequestService;
+
+    private UserController(UserService userService, FriendshipRequestService friendshipRequestService) {
         this.userService = userService;
+        this.friendshipRequestService = friendshipRequestService;
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll() {
+    private ResponseEntity<List<UserDTO>> findAll() {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
+    @GetMapping(value = "/{id}")
+    private ResponseEntity<UserDTO> findUserById(@PathVariable Integer id) {
+        User obj = userService.findById(id);
+        UserDTO response = new UserDTO(obj);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping(value = "/insert")
-    public ResponseEntity<UserDTO> insert(@RequestBody User obj) {
+    private ResponseEntity<UserDTO> insert(@RequestBody User obj) {
         UserDTO result = userService.insert(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).body(result);
+    }
+
+    @GetMapping(value = "/friendship-requests")
+    private ResponseEntity<Set<FriendshipRequestDTO>> getAllFriendshipRequests() {
+        Set<FriendshipRequestDTO> result = friendshipRequestService.findAll();
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping(value = "/friendship-requests/{receiverId}/{requestId}")
+    private ResponseEntity<String> acceptRequest(@PathVariable Integer receiverId,@PathVariable Integer requestId) {
+        if (friendshipRequestService.acceptFriendRequest(receiverId, requestId)) {
+            return ResponseEntity.ok("Friendship request accepted!");
+        }
+        return ResponseEntity.status(403).body("Request not accepted!");
     }
 }

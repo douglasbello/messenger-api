@@ -28,7 +28,7 @@ public class UserService {
 
     public User findById(Integer id) {
         Optional<User> obj = userRepository.findById(id);
-        return obj.orElseThrow(RuntimeException::new);
+        return obj.get();
     }
 
     public UserDTO insert(User obj) {

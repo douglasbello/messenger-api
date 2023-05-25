@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
+import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
@@ -49,6 +51,16 @@ public class UserController {
     private ResponseEntity<Set<FriendshipRequestDTO>> getAllFriendshipRequests() {
         Set<FriendshipRequestDTO> result = friendshipRequestService.findAll();
         return ResponseEntity.ok().body(result);
+    }
+    
+    @PostMapping(value = "/friendship-requests/send/{senderId}/{receiverId}")
+    private ResponseEntity<String> sendRequest(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
+    	boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
+    	
+    	if (result) {            
+        	return ResponseEntity.ok().body("Request created successful!");
+    	}
+    	return ResponseEntity.status(403).body("Error creating friendship request!");
     }
 
     @PostMapping(value = "/friendship-requests/accept/{receiverId}/{requestId}")

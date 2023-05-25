@@ -39,16 +39,12 @@ public class InsertTest implements CommandLineRunner {
 
         User user1 = new User(null, "user01", "user01");
         User user2 = new User(null, "user02", "user02");
+        User user3 = new User(null, "douglas", "douglas");
+        User user4 = new User(null, "maria", "maria");
 
-        userService.insertAll(Arrays.asList(user1, user2));
+        userService.insertAll(Arrays.asList(user1, user2, user3, user4));
 
-        FriendshipRequest friendshipRequest1 = new FriendshipRequest(null, user1,user2, FriendshipRequestStatus.WAITING_RESPONSE);
-        FriendshipRequestDTO friendshipRequestDTO = friendshipRequestService.insert(friendshipRequest1);
-        FriendshipRequest result = new FriendshipRequest();
-        result.setId(friendshipRequestDTO.getId());
-        result.setReceiver(friendshipRequestDTO.getReceiver());
-        result.setSender(friendshipRequestDTO.getSender());
-        result.setStatus(friendshipRequestDTO.getStatus());
+        friendshipRequestService.sendRequest(1, 2);
 
         Chat chat1 = new Chat();
         chat1.getParticipants().add(user1);

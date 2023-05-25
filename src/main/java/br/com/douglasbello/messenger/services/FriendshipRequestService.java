@@ -45,9 +45,22 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public FriendshipRequestDTO insert(FriendshipRequest obj) {
-        FriendshipRequestDTO result = new FriendshipRequestDTO(friendshipRequestRepository.save(obj));
-        return result;
+    public boolean sendRequest(Integer senderId, Integer receiverId) {
+    	try {
+    		User sender = userService.findById(senderId);
+    		User receiver = userService.findById(receiverId);
+    		
+    		if (sender != null && receiver != null) {
+    			FriendshipRequest entity = new FriendshipRequest(null, sender, receiver, FriendshipRequestStatus.WAITING_RESPONSE);
+    			friendshipRequestRepository.save(entity);
+    			
+    			return true;
+    		}
+    		
+    	} catch (NoSuchElementException e) {
+    		return false;
+    	}
+        return false;
     }
 
     @Transactional
@@ -61,11 +74,11 @@ public class FriendshipRequestService {
         }
     }
 
-    public FriendshipRequestDTO update(Integer id, FriendshipRequest obj) {
+    public boolean update(Integer id, FriendshipRequest obj) {
         try {
             FriendshipRequest entity = friendshipRequestRepository.getReferenceById(id);
             updateData(entity, obj);
-            return insert(obj);
+            return true;
         } catch (EntityNotFoundException e) {
             throw new RuntimeException();
         }

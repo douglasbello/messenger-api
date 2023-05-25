@@ -55,6 +55,15 @@ public class UserController {
     
     @PostMapping(value = "/friendship-requests/send/{senderId}/{receiverId}")
     private ResponseEntity<String> sendRequest(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
+    	
+    	if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
+    		return ResponseEntity.status(403).body("You already sent an friend request to this user.");
+    	}
+    	
+    	if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
+    		return ResponseEntity.status(403).body("Error: users are already friends");
+    	}
+    	
     	boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
     	
     	if (result) {            

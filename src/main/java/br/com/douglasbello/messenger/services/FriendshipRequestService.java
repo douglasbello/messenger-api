@@ -1,7 +1,6 @@
 package br.com.douglasbello.messenger.services;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
-import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
@@ -112,17 +111,42 @@ public class FriendshipRequestService {
             if (friendshipRequest != null && Objects.equals(receiverId, friendshipRequest.getReceiver().getId())) {
                 User receiver = userService.findById(friendshipRequest.getReceiver().getId());
                 User sender = userService.findById(friendshipRequest.getSender().getId());
+                
                 receiver.getFriends().add(sender);
                 sender.getFriends().add(receiver);
+                
                 friendshipRequest.setStatus(FriendshipRequestStatus.ACCEPTED);
+                
                 update(requestId, friendshipRequest);
                 userService.update(receiver.getId(), receiver);
                 userService.update(sender.getId(), sender);
+                
                 return true;
             }
         } catch (NoSuchElementException e) {
             return false;
         }
         return false;
+    }
+    
+    @Transactional
+    public boolean checkIfUserAlreadySentARequestToTheReceiver(Integer senderId, Integer receiverId) {
+    	try {
+        	List<FriendshipRequest> result = friendshipRequestRepository.findAll();
+        	
+        	User sender = userService.findById(senderId);
+        	User receiver = userService.findById(receiverId);
+        	
+        	for (FriendshipRequest friendshipRequest : result) {
+        		if (friendshipRequest.getSender() == sender && friendshipRequest.getReceiver() == receiver) {
+        			return true;
+        		}
+        	}
+        	
+    	} catch (NoSuchElementException e) {
+    		return false;
+    	}
+  	
+    	return false;
     }
 }

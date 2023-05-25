@@ -46,6 +46,7 @@ public class InsertTest implements CommandLineRunner {
 
         friendshipRequestService.sendRequest(1, 2);
 
+
         Chat chat1 = new Chat();
         chat1.getParticipants().add(user1);
         chat1.getParticipants().add(user2);

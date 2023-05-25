@@ -51,11 +51,19 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping(value = "/friendship-requests/{receiverId}/{requestId}")
+    @PostMapping(value = "/friendship-requests/accept/{receiverId}/{requestId}")
     private ResponseEntity<String> acceptRequest(@PathVariable Integer receiverId,@PathVariable Integer requestId) {
         if (friendshipRequestService.acceptFriendRequest(receiverId, requestId)) {
             return ResponseEntity.ok("Friendship request accepted!");
         }
-        return ResponseEntity.status(403).body("Request not accepted!");
+        return ResponseEntity.status(403).body("Unexpected error!");
+    }
+
+    @PostMapping(value = "/friendship-requests/decline/{receiverId}/{requestId}")
+    private ResponseEntity<String> declineRequest(@PathVariable Integer receiverId, @PathVariable Integer requestId) {
+        if (friendshipRequestService.declineFriendRequest(receiverId, requestId)) {
+            return ResponseEntity.ok("Friendship request declined!");
+        }
+        return ResponseEntity.status(403).body("Unexpected error!");
     }
 }

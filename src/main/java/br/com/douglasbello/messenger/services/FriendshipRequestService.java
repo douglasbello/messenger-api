@@ -78,8 +78,18 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public void declineFriendRequest(FriendshipRequest friendshipRequest) {
-        delete(friendshipRequest.getId());
+    public boolean declineFriendRequest(Integer receiverId , Integer requestId) {
+        try {
+            FriendshipRequest friendshipRequest = findById(requestId);
+            if (friendshipRequest != null && Objects.equals(receiverId, friendshipRequest.getReceiver().getId())) {
+                delete(requestId);
+                return true;
+            }
+
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return false;
     }
 
     @Transactional

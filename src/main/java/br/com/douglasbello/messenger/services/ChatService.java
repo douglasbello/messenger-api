@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -33,9 +34,23 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatDTO insert(Chat obj) {
-        ChatDTO chatDTO = new ChatDTO(chatRepository.save(obj));
-        return chatDTO;
+    public boolean createChat(Integer firstUserId, Integer secondUserId) {
+        try {
+            User firstUser = userService.findById(firstUserId);
+            User secondUser = userService.findById(secondUserId);
+
+            if (firstUser == null || secondUser == null) {
+                return false;
+            }
+
+            Chat chat = new Chat();
+            chat.getParticipants().add(firstUser);
+            chat.getParticipants().add(secondUser);
+            chatRepository.save(chat);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     private void updateData(Chat entity, Chat obj) {
@@ -44,7 +59,6 @@ public class ChatService {
         entity.getMessages().addAll(obj.getMessages());
     }
 
-    @Transactional
     public ChatDTO update(Integer id, Chat obj) {
         try {
             Chat entity = chatRepository.getReferenceById(id);
@@ -59,7 +73,7 @@ public class ChatService {
         messageService.insert(message);
         Chat chat = message.getChat();
         chat.getMessages().add(message);
-        insert(chat);
+        update(chat.getId(), chat);
     }
     
     @Transactional

@@ -11,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.douglasbello.messenger.entities.FriendshipRequest;
 import br.com.douglasbello.messenger.entities.User;
-import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
@@ -87,4 +85,5 @@ public class UserController {
         }
         return ResponseEntity.status(403).body("Unexpected error!");
     }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,6 +32,11 @@ public class ChatService {
     public List<ChatDTO> findAll() {
         List<Chat> result = chatRepository.findAll();
         return result.stream().map(ChatDTO::new).toList();
+    }
+
+    public Chat findById(Integer id) {
+        Optional<Chat> obj = chatRepository.findById(id);
+        return obj.get();
     }
 
     @Transactional
@@ -90,5 +96,22 @@ public class ChatService {
     	}
     	
     	return false;
+    }
+
+    @Transactional
+    public boolean checkIfTheChatContainsTheUser(Integer chatId, Integer senderId, Integer receiverId) {
+        try {
+            Chat chat = findById(chatId);
+            User sender = userService.findById(senderId);
+            User receiver = userService.findById(receiverId);
+
+            if (!chat.getParticipants().contains(sender) || !chat.getParticipants().contains(receiver)) {
+                return false;
+            }
+
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 }

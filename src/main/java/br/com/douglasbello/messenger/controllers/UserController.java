@@ -2,6 +2,7 @@ package br.com.douglasbello.messenger.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
@@ -38,11 +39,36 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping(value = "/insert")
-    private ResponseEntity<UserDTO> insert(@RequestBody User obj) {
-        UserDTO result = userService.insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).body(result);
+    @PostMapping(value = "/signIn")
+    private ResponseEntity<String> signIn(@RequestBody User obj) {
+        boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
+        if (result) {
+            return ResponseEntity.status(403).body("Username is already in use!");
+        }
+
+        userService.signIn(obj);
+        return ResponseEntity.ok().body("Account created successfully!");
+    }
+
+    @PostMapping(value = "/login")
+    private ResponseEntity<String> login(@RequestBody User user) {
+        try {
+            User db = userService.findUserByUsername(user.getUsername());
+
+            if (db == null) {
+                return ResponseEntity.status(403).body("User or password wrong.");
+            }
+
+            boolean result = userService.login(user, db);
+
+            if (!result) {
+                return ResponseEntity.status(403).body("User or password wrong./2");
+            }
+
+            return ResponseEntity.ok().body("You are logged!");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(403).body("User or password wrong./3");
+        }
     }
 
     @GetMapping(value = "/friendship-requests")
@@ -50,24 +76,24 @@ public class UserController {
         Set<FriendshipRequestDTO> result = friendshipRequestService.findAll();
         return ResponseEntity.ok().body(result);
     }
-    
+
     @PostMapping(value = "/friendship-requests/send/{senderId}/{receiverId}")
     private ResponseEntity<String> sendRequest(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
-    	
-    	if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
-    		return ResponseEntity.status(403).body("You already sent an friend request to this user.");
-    	}
-    	
-    	if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
-    		return ResponseEntity.status(403).body("Error: users are already friends");
-    	}
-    	
-    	boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
-    	
-    	if (result) {            
-        	return ResponseEntity.ok().body("Request created successful!");
-    	}
-    	return ResponseEntity.status(403).body("Error creating friendship request!");
+
+        if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
+            return ResponseEntity.status(403).body("You already sent an friend request to this user.");
+        }
+
+        if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
+            return ResponseEntity.status(403).body("Error: users are already friends");
+        }
+
+        boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
+
+        if (result) {
+            return ResponseEntity.ok().body("Request created successful!");
+        }
+        return ResponseEntity.status(403).body("Error creating friendship request!");
     }
 
     @PostMapping(value = "/friendship-requests/accept/{receiverId}/{requestId}")
@@ -85,5 +111,4 @@ public class UserController {
         }
         return ResponseEntity.status(403).body("Unexpected error!");
     }
-
 }

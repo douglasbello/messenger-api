@@ -65,11 +65,10 @@ public class FriendshipRequestService {
         }
     }
 
-    public boolean update(Integer id, FriendshipRequest obj) {
+    public void update(Integer id, FriendshipRequest obj) {
         try {
             FriendshipRequest entity = friendshipRequestRepository.getReferenceById(id);
             updateData(entity, obj);
-            return true;
         } catch (EntityNotFoundException e) {
             throw new RuntimeException();
         }

@@ -97,7 +97,7 @@ public class UserService {
     }
 
     public void signIn(User user) {
-        passwordEncoder.encode(user.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 

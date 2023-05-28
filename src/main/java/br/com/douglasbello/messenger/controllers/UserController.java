@@ -1,6 +1,5 @@
 package br.com.douglasbello.messenger.controllers;
 
-import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -10,9 +9,9 @@ import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.douglasbello.messenger.entities.User;
+import br.com.douglasbello.messenger.security.Token;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
@@ -56,18 +55,18 @@ public class UserController {
             User db = userService.findUserByUsername(user.getUsername());
 
             if (db == null) {
-                return ResponseEntity.status(403).body("User or password wrong.");
+                return ResponseEntity.status(403).body("Username or password incorrects.");
             }
 
             boolean result = userService.login(user, db);
 
             if (!result) {
-                return ResponseEntity.status(403).body("User or password wrong./2");
+                return ResponseEntity.status(403).body("Username or password incorrects./2");
             }
 
-            return ResponseEntity.ok().body("You are logged!");
+            return ResponseEntity.ok("Bearer " + db.getToken());
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(403).body("User or password wrong./3");
+            return ResponseEntity.status(403).body("Username or password incorrects./3");
         }
     }
 

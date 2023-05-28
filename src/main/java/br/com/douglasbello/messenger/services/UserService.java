@@ -69,6 +69,10 @@ public class UserService {
         Set<User> friends = userRepository.findFriendsById(userId);
         return friends;
     }
+    
+    public long count() {
+    	return userRepository.count();
+    }
 
     @Transactional
     public boolean checkIfUsersAreAlreadyFriends(Integer senderId, Integer receiverId) {

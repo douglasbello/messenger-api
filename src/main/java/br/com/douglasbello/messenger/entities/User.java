@@ -50,19 +50,16 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
+    
+    private String token;
 
     public User() {
-    }
-
-    public User(Integer id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        setToken();
     }
 
     public Integer getId() {
@@ -124,6 +121,19 @@ public class User implements Serializable {
 
     public List<Message> getMessagesReceived() {
         return messagesReceived;
+    }
+    
+    private void setToken() {
+    	Random rd = new Random();
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0; i < 16; i++) {
+    		sb.append(rd.nextInt(10));
+    	}
+    	token = sb.toString();
+    }
+    
+    public String getToken() {
+    	return token;
     }
 
     @Override

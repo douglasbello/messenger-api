@@ -1,6 +1,5 @@
 package br.com.douglasbello.messenger.repositories;
 
-import br.com.douglasbello.messenger.entities.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

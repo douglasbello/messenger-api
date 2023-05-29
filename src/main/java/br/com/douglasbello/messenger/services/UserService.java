@@ -33,14 +33,13 @@ public class UserService {
         return result.stream().map(UserDTO::new).toList();
     }
 
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
     public User findById(Integer id) {
         Optional<User> obj = userRepository.findById(id);
         return obj.get();
-    }
-
-    public UserDTO insert(User obj) {
-        UserDTO result = new UserDTO(userRepository.save(obj));
-        return result;
     }
 
     @Transactional

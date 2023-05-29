@@ -123,7 +123,7 @@ public class User implements Serializable {
         return messagesReceived;
     }
     
-    private void setToken() {
+    public void setToken() {
     	Random rd = new Random();
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < 16; i++) {

@@ -1,14 +1,14 @@
 package br.com.douglasbello.messenger.dto;
 
-public class RequestErrorDTO {
+public class RequestResponseDTO {
 	private int status;
 	private String message;
 	
-	public RequestErrorDTO() {
+	public RequestResponseDTO() {
 		
 	}
 
-	public RequestErrorDTO(int status, String message) {
+	public RequestResponseDTO(int status, String message) {
 		super();
 		this.status = status;
 		this.message = message;

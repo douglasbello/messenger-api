@@ -1,5 +1,6 @@
 package br.com.douglasbello.messenger.security;
 
+import br.com.douglasbello.messenger.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,10 +16,10 @@ import br.com.douglasbello.messenger.repositories.UserRepository;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	private final UserRepository userRepository;
+	private final UserService userService;
 	
-	public SecurityConfig(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	public SecurityConfig(UserService userService) {
+		this.userService = userService;
 	}
 
 	@Bean
@@ -36,7 +37,7 @@ public class SecurityConfig {
 			.anyRequest().authenticated().and().cors();
 		
 		http.headers().frameOptions().disable();
-		http.addFilterBefore(new Filter(userRepository), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new MyFilter(userService), UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
 		

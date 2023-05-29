@@ -5,13 +5,18 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
+import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.douglasbello.messenger.entities.User;
-import br.com.douglasbello.messenger.security.Token;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
@@ -42,9 +47,10 @@ public class UserController {
     private ResponseEntity<String> signIn(@RequestBody User obj) {
         boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
         if (result) {
-            return ResponseEntity.status(403).body("Username is already in use!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username is already in use!");
         }
 
+        obj.setToken();
         userService.signIn(obj);
         return ResponseEntity.ok().body("Account created successfully!");
     }
@@ -55,7 +61,7 @@ public class UserController {
             User db = userService.findUserByUsername(user.getUsername());
 
             if (db == null) {
-                return ResponseEntity.status(403).body("Username or password incorrects.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrects.");
             }
 
             boolean result = userService.login(user, db);
@@ -64,9 +70,10 @@ public class UserController {
                 return ResponseEntity.status(403).body("Username or password incorrects./2");
             }
 
-            return ResponseEntity.ok("Bearer " + db.getToken());
+            return ResponseEntity.ok().body("Id " + db.getId() + "\nUsername: " + db.getUsername() + "\nToken "
+            + db.getToken());
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(403).body("Username or password incorrects./3");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrects./3");
         }
     }
 
@@ -80,11 +87,11 @@ public class UserController {
     private ResponseEntity<String> sendRequest(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
 
         if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
-            return ResponseEntity.status(403).body("You already sent an friend request to this user.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You already sent an friend request to this user.");
         }
 
         if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
-            return ResponseEntity.status(403).body("Error: users are already friends");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: users are already friends");
         }
 
         boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
@@ -92,7 +99,7 @@ public class UserController {
         if (result) {
             return ResponseEntity.ok().body("Request created successful!");
         }
-        return ResponseEntity.status(403).body("Error creating friendship request!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error creating friendship request!");
     }
 
     @PostMapping(value = "/friendship-requests/accept/{receiverId}/{requestId}")
@@ -100,7 +107,7 @@ public class UserController {
         if (friendshipRequestService.acceptFriendRequest(receiverId, requestId)) {
             return ResponseEntity.ok("Friendship request accepted!");
         }
-        return ResponseEntity.status(403).body("Unexpected error!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unexpected error!");
     }
 
     @PostMapping(value = "/friendship-requests/decline/{receiverId}/{requestId}")
@@ -108,6 +115,6 @@ public class UserController {
         if (friendshipRequestService.declineFriendRequest(receiverId, requestId)) {
             return ResponseEntity.ok("Friendship request declined!");
         }
-        return ResponseEntity.status(403).body("Unexpected error!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unexpected error!");
     }
 }

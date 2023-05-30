@@ -9,9 +9,9 @@ public class UserDTO {
     private String username;
     private String password;
     private String imgUrl;
-    private Set<User> friends = new HashSet<>();
-
+    private Set<Integer> friends = new HashSet<>();
     private Set<Integer> chats = new HashSet<>();
+    private String token;
 
     public UserDTO() {
     }
@@ -21,8 +21,9 @@ public class UserDTO {
         this.username = entity.getUsername();
         this.password = entity.getPassword();
         this.imgUrl = entity.getImgUrl();
-        this.friends = entity.getFriends();
+        this.friends = entity.getFriendsIds();
         this.chats = entity.getChatsIds();
+        this.token = entity.getToken();
     }
 
     public Integer getId() {
@@ -57,12 +58,20 @@ public class UserDTO {
         this.imgUrl = imgUrl;
     }
 
-    public Set<User> getFriends() {
+    public Set<Integer> getFriends() {
         return friends;
     }
 
     public Set<Integer> getChats() {
         return chats;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -85,6 +94,7 @@ public class UserDTO {
                 ", username='" + username + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", friends=" + friends +
+                ", token=" + token +
                 '}';
     }
 }

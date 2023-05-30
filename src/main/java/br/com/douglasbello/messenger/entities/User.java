@@ -115,6 +115,11 @@ public class User implements Serializable {
         return ids;
     }
 
+    public Set<Integer> getFriendsIds() {
+        Set<Integer> ids = friends.stream().map(User::getId).collect(Collectors.toSet());
+        return ids;
+    }
+
     public List<Message> getMessagesSent() {
         return messagesSent;
     }

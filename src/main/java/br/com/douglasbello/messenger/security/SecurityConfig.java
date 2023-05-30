@@ -28,7 +28,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests()
 			.requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
 			.permitAll()
-			.requestMatchers(HttpMethod.GET, "/users")
+			.requestMatchers(HttpMethod.GET, "/users/**")
 			.permitAll()
 			.requestMatchers(HttpMethod.POST, "/users/signIn")
 			.permitAll()

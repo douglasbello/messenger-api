@@ -52,5 +52,7 @@ public class InsertTest implements CommandLineRunner {
         
 
         friendshipRequestService.sendRequest(1, 2);
+        friendshipRequestService.acceptFriendRequest(2,1);
+        chatService.createChat(1,2);
     }
 }

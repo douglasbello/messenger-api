@@ -5,14 +5,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
-import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,43 +32,55 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    private ResponseEntity<UserDTO> findUserById(@PathVariable Integer id) {
-        User obj = userService.findById(id);
-        UserDTO response = new UserDTO(obj);
-        return ResponseEntity.ok().body(response);
+    private <T> ResponseEntity<T> findUserById(@PathVariable Integer id) {
+        try {
+            User obj = userService.findById(id);
+            UserDTO response = new UserDTO(obj);
+            return ResponseEntity.ok().body((T) response);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body((T) "User doesn't exists!");
+        }
     }
 
     @PostMapping(value = "/signIn")
     private ResponseEntity<String> signIn(@RequestBody User obj) {
+        if (obj.getUsername().length() < 4 || obj.getUsername().length() > 20) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username cannot be less than 4 characters or more than 20 characters");
+        }
+        if (obj.getPassword().length() < 8 || obj.getPassword().length() > 100) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Password cannot be less than 8 characters or more than 100 characters.");
+        }
         boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
         if (result) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username is already in use!");
         }
-
+        if (obj.getImgUrl() != null || obj.getToken() != null || obj.getId() != null || obj.getChats().size() > 0 ||
+                obj.getFriends().size() > 0) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must pass only username and password in the request!");
+        }
         obj.setToken();
         userService.signIn(obj);
         return ResponseEntity.ok().body("Account created successfully!");
     }
 
     @PostMapping(value = "/login")
-    private ResponseEntity<String> login(@RequestBody User user) {
+    private ResponseEntity<?> login(@RequestBody User user) {
         try {
             User db = userService.findUserByUsername(user.getUsername());
 
             if (db == null) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrects.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrect.");
             }
 
             boolean result = userService.login(user, db);
 
             if (!result) {
-                return ResponseEntity.status(403).body("Username or password incorrects./2");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrect.");
             }
 
-            return ResponseEntity.ok().body("Id " + db.getId() + "\nUsername: " + db.getUsername() + "\nToken "
-            + db.getToken());
+            return ResponseEntity.ok().body(new UserDTO(db));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrects./3");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or password incorrect.");
         }
     }
 

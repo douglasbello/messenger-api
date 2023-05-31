@@ -31,21 +31,22 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
+    /* the return of this method is a ResponseEntity<> of type wildcard, so we can return either an object or a string */
     @GetMapping(value = "/{id}")
-    private <T> ResponseEntity<T> findUserById(@PathVariable Integer id) {
+    private ResponseEntity<?> findUserById(@PathVariable Integer id) {
         try {
             User obj = userService.findById(id);
             UserDTO response = new UserDTO(obj);
-            return ResponseEntity.ok().body((T) response);
+            return ResponseEntity.ok().body(response);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body((T) "User doesn't exists!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User doesn't exists!");
         }
     }
 
     @PostMapping(value = "/signIn")
     private ResponseEntity<String> signIn(@RequestBody User obj) {
         if (obj.getUsername().length() < 4 || obj.getUsername().length() > 20) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username cannot be less than 4 characters or more than 20 characters");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username cannot be less than 4 characters or more than 20 characters.");
         }
         if (obj.getPassword().length() < 8 || obj.getPassword().length() > 100) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Password cannot be less than 8 characters or more than 100 characters.");

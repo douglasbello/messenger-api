@@ -116,4 +116,13 @@ public class UserService {
             return null;
         }
     }
+    
+    public User findUserByToken(String token) {
+    	try {
+    		User obj = userRepository.findUserByToken(token);
+    		return obj;
+    	} catch (NoSuchElementException e) {
+    		return null;
+    	}
+    }
 }

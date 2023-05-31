@@ -125,4 +125,20 @@ public class UserService {
     		return null;
     	}
     }
+    
+    /* this method is used to check if the token passed is the same as the userId passed */
+    public boolean checkIfTheTokenIsTheSameOfTheUser(String token, Integer userId) {
+    	try {
+    		System.out.println("GREMIO" + token);
+    		User sender = findById(userId);
+    		
+    		if (!sender.getToken().equals(token)) {
+    			return false;
+    		}
+    		
+    		return true;
+    	} catch (NoSuchElementException e) {
+    		return false;
+    	}
+    }
 }

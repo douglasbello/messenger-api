@@ -38,9 +38,9 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public boolean sendRequest(String token, Integer receiverId) {
+    public boolean sendRequest(Integer senderId, Integer receiverId) {
     	try {
-    		User sender = userService.findUserByToken(token);
+    		User sender = userService.findById(senderId);
     		User receiver = userService.findById(receiverId);
     		
     		if (sender != null && receiver != null) {
@@ -81,10 +81,10 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public boolean declineFriendRequest(String receiverToken, Integer requestId) {
+    public boolean declineFriendRequest(Integer receiverId, Integer requestId) {
         try {
             FriendshipRequest friendshipRequest = findById(requestId);
-            if (friendshipRequest != null && Objects.equals(receiverToken, friendshipRequest.getReceiver().getToken())) {
+            if (friendshipRequest != null && Objects.equals(receiverId, friendshipRequest.getReceiver().getId())) {
                 delete(requestId);
                 return true;
             }
@@ -96,10 +96,10 @@ public class FriendshipRequestService {
     }
 
     @Transactional
-    public boolean acceptFriendRequest(String receiverToken, Integer requestId) {
+    public boolean acceptFriendRequest(Integer receiverId, Integer requestId) {
         try {
             FriendshipRequest friendshipRequest = findById(requestId);
-            if (friendshipRequest != null && Objects.equals(receiverToken, friendshipRequest.getReceiver().getToken())) {
+            if (friendshipRequest != null && Objects.equals(receiverId, friendshipRequest.getReceiver().getId())) {
                 User receiver = userService.findById(friendshipRequest.getReceiver().getId());
                 User sender = userService.findById(friendshipRequest.getSender().getId());
                 

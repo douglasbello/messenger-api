@@ -7,7 +7,6 @@ import java.util.*;
 public class UserDTO {
     private Integer id;
     private String username;
-    private String password;
     private String imgUrl;
     private Set<Integer> friends = new HashSet<>();
     private Set<Integer> chats = new HashSet<>();
@@ -19,7 +18,6 @@ public class UserDTO {
     public UserDTO(User entity) {
         this.id = entity.getId();
         this.username = entity.getUsername();
-        this.password = entity.getPassword();
         this.imgUrl = entity.getImgUrl();
         this.friends = entity.getFriendsIds();
         this.chats = entity.getChatsIds();
@@ -40,14 +38,6 @@ public class UserDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getImgUrl() {

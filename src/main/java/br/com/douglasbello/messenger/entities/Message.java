@@ -40,6 +40,13 @@ public class Message {
         this.chat = chat;
         this.sentAt = LocalDateTime.now();
     }
+    
+    public Message(String messageText, User sender, User receiver) {
+        this.messageText = messageText;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.sentAt = LocalDateTime.now();
+    }
 
     public Integer getId() {
         return id;
@@ -84,6 +91,10 @@ public class Message {
 
     public Chat getChat() {
         return chat;
+    }
+    
+    public void setChat(Chat chat) {
+    	this.chat = chat;
     }
 
     @Override

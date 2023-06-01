@@ -99,13 +99,13 @@ public class ChatService {
     }
 
     @Transactional
-    public boolean checkIfTheChatContainsTheUser(Integer chatId, Integer senderId, Integer receiverId) {
+    public boolean checkIfTheChatContainsBothUsers(Integer chatId, Integer user1, Integer user2) {
         try {
             Chat chat = findById(chatId);
-            User sender = userService.findById(senderId);
-            User receiver = userService.findById(receiverId);
+            User sender = userService.findById(user1);
+            User receiver = userService.findById(user2);
 
-            if (!chat.getParticipants().contains(sender) || !chat.getParticipants().contains(receiver)) {
+            if (!chat.getParticipants().contains(sender) && !chat.getParticipants().contains(receiver)) {
                 return false;
             }
 
@@ -113,5 +113,21 @@ public class ChatService {
         } catch (NoSuchElementException e) {
             return false;
         }
+    }
+    
+    @Transactional
+    public User getUserInChatByToken(String token, Integer chatId) {
+    	try {
+    		Chat chat = findById(chatId);
+    		for (User u : chat.getParticipants()) {
+    			if (u.getToken().equals(token)) {
+    				return u;
+    			}
+    		}
+    		
+    		return null;
+    	} catch (NoSuchElementException e) {
+    		return null;
+    	}
     }
 }

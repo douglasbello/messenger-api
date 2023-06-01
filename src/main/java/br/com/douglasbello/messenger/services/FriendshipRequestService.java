@@ -19,10 +19,13 @@ public class FriendshipRequestService {
     private final FriendshipRequestRepository friendshipRequestRepository;
 
     private final UserService userService;
+    
+    private final ChatService chatService;
 
-    public FriendshipRequestService(FriendshipRequestRepository friendshipRequestRepository, UserService userService) {
+    public FriendshipRequestService(FriendshipRequestRepository friendshipRequestRepository, UserService userService, ChatService chatService) {
         this.friendshipRequestRepository = friendshipRequestRepository;
         this.userService = userService;
+        this.chatService = chatService;
     }
 
     @Transactional(readOnly = true)
@@ -112,6 +115,7 @@ public class FriendshipRequestService {
                 userService.update(receiver.getId(), receiver);
                 userService.update(sender.getId(), sender);
                 
+                chatService.createChat(receiver.getId(), sender.getId());
                 return true;
             }
         } catch (NoSuchElementException e) {

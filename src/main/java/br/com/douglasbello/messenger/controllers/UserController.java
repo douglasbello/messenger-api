@@ -109,7 +109,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/friendship-requests/accept/{receiverId}/{requestId}")
-    private ResponseEntity<String> acceptRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId,@PathVariable Integer requestId) {
+    private ResponseEntity<String> acceptRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId, @PathVariable Integer requestId) {
         
     	receiverToken = receiverToken.replace("Bearer ", "");
     	

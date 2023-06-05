@@ -1,5 +1,6 @@
 package br.com.douglasbello.messenger.controllers;
 
+import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,57 +25,57 @@ public class FriendshipRequestController {
 	}
 	
 	@PostMapping(value = "/send/{senderId}/{receiverId}")
-    private ResponseEntity<String> sendRequest(@RequestHeader("Authorization") String senderToken, @PathVariable Integer senderId, @PathVariable Integer receiverId) {
+    private ResponseEntity<RequestResponseDTO> sendRequest(@RequestHeader("Authorization") String senderToken, @PathVariable Integer senderId, @PathVariable Integer receiverId) {
 
     	senderToken = senderToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(senderToken, senderId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User unauthorized for this request!");
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized for this request!"));
     	}
     	
         if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("You already sent an friend request to this user.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(409,"You already sent an friend request to this user."));
         }
 
         if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: users are already friends");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RequestResponseDTO(402,"Error: users are already friends"));
         }
 
         boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
 
         if (result) {
-            return ResponseEntity.ok().body("Request created successful!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponseDTO(201,"Request created successful!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating friendship request!");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Error creating friendship request!"));
     }
 
     @PostMapping(value = "/accept/{receiverId}/{requestId}")
-    private ResponseEntity<String> acceptRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId, @PathVariable Integer requestId) {
+    private ResponseEntity<RequestResponseDTO> acceptRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId, @PathVariable Integer requestId) {
         
     	receiverToken = receiverToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(receiverToken, receiverId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User unauthorized");
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized"));
     	}
     	
     	if (friendshipRequestService.acceptFriendRequest(receiverId, requestId)) {
-            return ResponseEntity.ok("Friendship request accepted!");
+            return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request accepted!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error!");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Unexpected error!"));
     }
 
     @PostMapping(value = "/decline/{receiverId}/{requestId}")
-    private ResponseEntity<String> declineRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId, @PathVariable Integer requestId) {
+    private ResponseEntity<RequestResponseDTO> declineRequest(@RequestHeader("Authorization") String receiverToken, @PathVariable Integer receiverId, @PathVariable Integer requestId) {
         
     	receiverToken = receiverToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(receiverToken, receiverId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User unauthorized!");
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized!"));
     	}
     	
     	if (friendshipRequestService.declineFriendRequest(receiverId, requestId)) {
-            return ResponseEntity.ok("Friendship request declined!");
+            return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request declined!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error!");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Unexpected error!"));
     }
 }

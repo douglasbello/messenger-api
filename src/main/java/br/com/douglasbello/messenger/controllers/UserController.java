@@ -3,6 +3,7 @@ package br.com.douglasbello.messenger.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import org.springframework.http.HttpStatus;
@@ -42,24 +43,24 @@ public class UserController {
     }
 
     @PostMapping(value = "/signIn")
-    private ResponseEntity<String> signIn(@RequestBody User obj) {
+    private ResponseEntity<RequestResponseDTO> signIn(@RequestBody User obj) {
         if (obj.getUsername().length() < 4 || obj.getUsername().length() > 20) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST	).body("Username cannot be less than 4 characters or more than 20 characters.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(400,"Username cannot be less than 4 characters or more than 20 characters."));
         }
         if (obj.getPassword().length() < 8 || obj.getPassword().length() > 100) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password cannot be less than 8 characters or more than 100 characters.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(400,"Password cannot be less than 8 characters or more than 100 characters."));
         }
         boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
         if (result) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already in use!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(409,"Username is already in use!"));
         }
         if (obj.getImgUrl() != null || obj.getToken() != null || obj.getId() != null || obj.getChats().size() > 0 ||
                 obj.getFriends().size() > 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must pass only username and password in the request!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(400,"You must pass only username and password in the request!"));
         }
         obj.setToken();
         userService.signIn(obj);
-        return ResponseEntity.ok().body("Account created successfully!");
+        return ResponseEntity.ok().body(new RequestResponseDTO(200, "Account created successfully!"));
     }
 
     @PostMapping(value = "/login")
@@ -68,18 +69,18 @@ public class UserController {
             User db = userService.findUserByUsername(user.getUsername());
 
             if (db == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password incorrect.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"Username or password incorrect."));
             }
 
             boolean result = userService.login(user, db);
 
             if (!result) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password incorrect.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"Username or password incorrect."));
             }
 
             return ResponseEntity.ok().body(new UserDTO(db));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password incorrect.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"Username or password incorrect."));
         }
     }
 }

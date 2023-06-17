@@ -42,7 +42,6 @@ public class UserService {
         return obj.get();
     }
 
-    @Transactional
     public void insertAll(List<User> users) {
         userRepository.saveAll(users);
     }
@@ -65,15 +64,13 @@ public class UserService {
     }
 
     public Set<User> getAllFriendsByUserId(Integer userId) {
-        Set<User> friends = userRepository.findFriendsById(userId);
-        return friends;
+        return userRepository.findFriendsById(userId);
     }
     
     public long count() {
     	return userRepository.count();
     }
 
-    @Transactional
     public boolean checkIfUsersAreAlreadyFriends(Integer senderId, Integer receiverId) {
         User sender = findById(senderId);
         User receiver = findById(receiverId);

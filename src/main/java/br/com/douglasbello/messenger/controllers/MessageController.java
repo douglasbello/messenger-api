@@ -50,19 +50,23 @@ public class MessageController {
     }
 
     @PostMapping(value = "/send/{chatId}/{receiverId}")
-    private ResponseEntity<RequestResponseDTO> sendMessage(@RequestHeader("Authorization") String senderToken, @PathVariable Integer chatId, Integer receiverId, @RequestBody String messageText) {
+    private ResponseEntity<RequestResponseDTO> sendMessage(@RequestHeader("Authorization") String senderToken, @PathVariable Integer chatId, @PathVariable Integer receiverId, @RequestBody String messageText) {
         try {
             Chat chat = chatService.findById(chatId);
             if (chat == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(404,"Chat doesn't exist!"));
             }
 
+            senderToken = senderToken.replace("Bearer ", "");
             User sender = userService.findUserByToken(senderToken);
             if (sender == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized!"));
             }
 
             User receiver = userService.findById(chatId);
+            if (sender == receiver) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(409, "User can't send a message to himself."));
+            }
             
             boolean result = chatService.checkIfTheChatContainsBothUsers(chatId, sender.getId(), receiverId);
             

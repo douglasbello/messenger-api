@@ -18,16 +18,8 @@ import br.com.douglasbello.messenger.services.UserService;
 public class UserController {
     private final UserService userService;
 
-    private final FriendshipRequestService friendshipRequestService;
-
-    private UserController(UserService userService, FriendshipRequestService friendshipRequestService) {
+    private UserController(UserService userService) {
         this.userService = userService;
-        this.friendshipRequestService = friendshipRequestService;
-    }
-
-    @GetMapping
-    private ResponseEntity<List<UserDTO>> findAll() {
-        return ResponseEntity.ok().body(userService.findAll());
     }
 
     /* the return of this method is a ResponseEntity<> of type wildcard, so we can return either an object or a string */

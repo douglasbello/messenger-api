@@ -40,7 +40,6 @@ public class FriendshipRequestService {
         return obj.get();
     }
 
-    @Transactional
     public boolean sendRequest(Integer senderId, Integer receiverId) {
     	try {
     		User sender = userService.findById(senderId);
@@ -59,7 +58,6 @@ public class FriendshipRequestService {
         return false;
     }
 
-    @Transactional
     public void delete(Integer id) {
         try {
             friendshipRequestRepository.deleteById(id);
@@ -83,7 +81,6 @@ public class FriendshipRequestService {
         entity.setReceiver(entity.getReceiver());
     }
 
-    @Transactional
     public boolean declineFriendRequest(Integer receiverId, Integer requestId) {
         try {
             FriendshipRequest friendshipRequest = findById(requestId);
@@ -124,7 +121,6 @@ public class FriendshipRequestService {
         return false;
     }
     
-    @Transactional
     public boolean checkIfUserAlreadySentARequestToTheReceiver(Integer senderId, Integer receiverId) {
     	try {
         	List<FriendshipRequest> result = friendshipRequestRepository.findAll();

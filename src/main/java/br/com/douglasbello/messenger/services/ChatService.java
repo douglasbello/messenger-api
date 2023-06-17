@@ -82,7 +82,6 @@ public class ChatService {
         update(chat.getId(), chat);
     }
     
-    @Transactional
     public boolean checkIfAChatBetweenUsersAlreadyExists(Integer firstUserId, Integer secondUserId) {
     	List<Chat> chats = chatRepository.findAll();
     	
@@ -98,7 +97,6 @@ public class ChatService {
     	return false;
     }
 
-    @Transactional
     public boolean checkIfTheChatContainsBothUsers(Integer chatId, Integer user1, Integer user2) {
         try {
             Chat chat = findById(chatId);

@@ -1,12 +1,6 @@
 package br.com.douglasbello.messenger.config;
 
-import br.com.douglasbello.messenger.dto.FriendshipRequestDTO;
-import br.com.douglasbello.messenger.dto.UserDTO;
-import br.com.douglasbello.messenger.entities.Chat;
-import br.com.douglasbello.messenger.entities.FriendshipRequest;
-import br.com.douglasbello.messenger.entities.Message;
 import br.com.douglasbello.messenger.entities.User;
-import br.com.douglasbello.messenger.entities.enums.FriendshipRequestStatus;
 import br.com.douglasbello.messenger.services.ChatService;
 import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import br.com.douglasbello.messenger.services.MessageService;
@@ -14,8 +8,6 @@ import br.com.douglasbello.messenger.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import java.util.Arrays;
 
 @Configuration
 @Profile("test")
@@ -42,14 +34,10 @@ public class InsertTest implements CommandLineRunner {
         User user3 = new User("douglas", "douglas");
         User user4 = new User("maria", "maria");
         
-        userService.encoding(user1);
-        userService.encoding(user2);
-        userService.encoding(user3);
-        userService.encoding(user4);
-
-
-        userService.insertAll(Arrays.asList(user1, user2, user3, user4));
-        
+        userService.signIn(user1);
+        userService.signIn(user2);
+        userService.signIn(user3);
+        userService.signIn(user4);        
 
         friendshipRequestService.sendRequest(1, 2);
         friendshipRequestService.acceptFriendRequest(2,1);

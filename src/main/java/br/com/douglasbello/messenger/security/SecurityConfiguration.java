@@ -40,8 +40,6 @@ public class SecurityConfiguration {
 				.permitAll()
 				.anyRequest().authenticated();
 				
-
-		
 		http.headers(headers -> headers.frameOptions().disable());
 		http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();

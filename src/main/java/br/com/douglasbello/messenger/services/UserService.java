@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import br.com.douglasbello.messenger.dto.LoginDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -83,10 +84,6 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public void encoding(User obj) {
-        obj.setPassword(passwordEncoder.encode(obj.getPassword()));
-    }
-
     public boolean checkIfTheUsernameIsAlreadyUsed(String username) {
     	if (userRepository.findUserByUsername(username) != null) {
     		return true;
@@ -99,8 +96,11 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean login(User user, User db) {
-        return passwordEncoder.matches(user.getPassword(), db.getPassword());
+    public boolean login(LoginDTO dto) {
+        if (userRepository.findUserByUsername(dto.username()) == null) {
+        	return false;
+        }
+        return passwordEncoder.matches(dto.password(), userRepository.findUserByUsername(dto.username()).getPassword());
     }
 
     public User findUserByUsername(String username) {

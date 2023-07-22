@@ -16,8 +16,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Set<User> findFriendsById(@Param("userId") Integer userId);
 
     User findUserByUsername(String username);
-    
-    User findUserByToken(String token);
-    
+
     UserDetails findByUsername(String username);
 }

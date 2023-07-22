@@ -22,9 +22,10 @@ public class TokenService {
 	
 	public String generateToken(User user) {
 		try {
-			Algorithm algorithm = Algorithm.HMAC256("SECRET_KEY");
+			Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
 			String token = JWT.create()
 					.withIssuer(ISSUER)
+					.withSubject(user.getUsername())
 					.withExpiresAt(generateExpiritationDate())
 					.sign(algorithm);
 			

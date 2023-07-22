@@ -1,7 +1,5 @@
 package br.com.douglasbello.messenger.entities;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -136,17 +134,16 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-    	
         return "id = " + id +
                 " username = " + username;
     }
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if (this.role == UserRole.ADMIN) {
-			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-		}
-		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.role == UserRole.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
 	@Override

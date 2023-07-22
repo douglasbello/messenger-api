@@ -19,7 +19,6 @@ import br.com.douglasbello.messenger.services.UserService;
 @RequestMapping(value = "/users/friendship-requests")
 public class FriendshipRequestController {
 	private final UserService userService;
-	
 	private final FriendshipRequestService friendshipRequestService;
 	
 	private FriendshipRequestController(UserService userService, FriendshipRequestService friendshipRequestService) {
@@ -29,7 +28,7 @@ public class FriendshipRequestController {
 	
 	@PostMapping(value = "/receiver/{receiverId}/send")
     private ResponseEntity<RequestResponseDTO> sendRequest(@PathVariable Integer receiverId) {
-    	if ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+    	if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
     		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized."));
     	}
     	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -42,18 +41,13 @@ public class FriendshipRequestController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RequestResponseDTO(HttpStatus.FORBIDDEN.value(), "Error: users are already friends"));
         }
 
-        boolean result = friendshipRequestService.sendRequest(sender.getId(), receiverId);
-
-        if (result) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponseDTO(HttpStatus.CREATED.value(), "Request created successfully!"));
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error creating friendship request!"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponseDTO(HttpStatus.CREATED.value(), "Request created successfully!"));
     }
 
     @PostMapping(value = "/accept/{requestId}")
     private ResponseEntity<RequestResponseDTO> acceptRequest(@PathVariable Integer requestId) {
         
-    	if ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+    	if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
     		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized."));
     	}
     	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

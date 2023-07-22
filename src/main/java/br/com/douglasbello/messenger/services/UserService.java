@@ -23,11 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
-
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;

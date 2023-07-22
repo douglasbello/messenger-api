@@ -29,9 +29,11 @@ public class Filter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		var token = recoverToken(request);
+		System.out.println("Token :" + token);
 		
 		if (token != null) {
 			var username = tokenService.validateToken(token);
+			System.out.println("Username: " + username);
 			UserDetails user = userRepository.findByUsername(username);
 			
 			var authentication = new UsernamePasswordAuthenticationToken(user,null, user.getAuthorities());

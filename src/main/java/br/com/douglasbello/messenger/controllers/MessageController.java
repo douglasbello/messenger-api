@@ -24,7 +24,7 @@ import br.com.douglasbello.messenger.services.MessageService;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
-@RequestMapping(value = "/chat/messages")
+@RequestMapping()
 public class MessageController {
 	private final MessageService messageService;
 	private final UserService userService;
@@ -36,9 +36,9 @@ public class MessageController {
 		this.chatService = chatService;
 	}
 
-    @GetMapping(value = "/{chatId}")
-    private ResponseEntity<?> listAll(@RequestHeader("Authorization") String participantToken, @PathVariable Integer chatId) {
-    	if (chatService.getUserInChatByToken(participantToken, chatId) != null) {
+    @GetMapping(value = "/user/{userId}/chat/{chatId}/messages")
+    private ResponseEntity<?> listAllMessages(@PathVariable Integer userId, @PathVariable Integer chatId) {
+    	if (userService.isCurrentUser(userService.findById(userId).getUsername())) {
     		Chat chat = chatService.findById(chatId);
     		List<Message> messages = chat.getMessages();
     		List<MessageDTO> messagesDto = messages.stream().map(u -> new MessageDTO(u)).collect(Collectors.toList());
@@ -46,39 +46,34 @@ public class MessageController {
     		return ResponseEntity.ok().body(messagesDto);
     	}
     	
-    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized!"));
+    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
     }
 
-    @PostMapping(value = "/send/{chatId}/{receiverId}")
-    private ResponseEntity<RequestResponseDTO> sendMessage(@RequestHeader("Authorization") String senderToken, @PathVariable Integer chatId, @PathVariable Integer receiverId, @RequestBody String messageText) {
-        try {
-            Chat chat = chatService.findById(chatId);
-            if (chat == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(404,"Chat doesn't exist!"));
-            }
-
-            senderToken = senderToken.replace("Bearer ", "");
-            User sender = userService.findUserByToken(senderToken);
-            if (sender == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized!"));
-            }
-
-            User receiver = userService.findById(chatId);
-            if (sender == receiver) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(409, "User can't send a message to himself."));
-            }
-            
-            boolean result = chatService.checkIfTheChatContainsBothUsers(chatId, sender.getId(), receiverId);
-            
-            if (!result) {
-            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"The chat doesn't contains the users!"));
-            }
-            
-            Message message = new Message(null, messageText, sender, receiver,chat);
-            messageService.insert(message);
-            return ResponseEntity.ok().body(new RequestResponseDTO(200,"Message sent!"));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(404,"Users or chat not found."));
+    @PostMapping(value = "/user/{userId}/chat/{chatId}/messages/send")
+    private ResponseEntity<RequestResponseDTO> sendMessage(@PathVariable Integer userId, @PathVariable Integer chatId, @RequestBody String messageText) {
+        if (chatService.findById(chatId) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "Chat doesn't exists!"));
         }
+        if (userService.findById(userId) == null) {
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "User doesn't exists."));
+        }
+        Chat chat = chatService.findById(chatId);
+
+        if (!userService.isCurrentUser(userService.findById(userId).getUsername())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
+        }
+
+        User sender = userService.findById(userId);
+        
+        User receiver = new User();
+        for (User participant : chat.getParticipants()) {
+        	if (participant != sender) {
+        		receiver = participant;
+        	}
+        }
+        
+        Message message = new Message(null, messageText, sender, receiver,chat);
+        messageService.insert(message);
+        return ResponseEntity.ok().body(new RequestResponseDTO(HttpStatus.OK.value(), "Message sent!"));
     }
 }

@@ -9,6 +9,7 @@ import br.com.douglasbello.messenger.dto.LoginDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -112,13 +113,9 @@ public class UserService implements UserDetailsService {
         }
     }
     
-    public User findUserByToken(String token) {
-    	try {
-    		User obj = userRepository.findUserByToken(token);
-    		return obj;
-    	} catch (NoSuchElementException e) {
-    		return null;
-    	}
+    public boolean isCurrentUser(String username) {
+    	User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	return currentUser.getUsername().equals(username);
     }
 
 	@Override

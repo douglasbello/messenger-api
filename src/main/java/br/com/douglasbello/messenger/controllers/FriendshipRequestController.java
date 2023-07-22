@@ -30,23 +30,23 @@ public class FriendshipRequestController {
     	senderToken = senderToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(senderToken, senderId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized for this request!"));
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized for this request!"));
     	}
     	
         if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(senderId, receiverId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(409,"You already sent an friend request to this user."));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(HttpStatus.CONFLICT.value(),"You already sent an friend request to this user."));
         }
 
         if (userService.checkIfUsersAreAlreadyFriends(senderId, receiverId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RequestResponseDTO(402,"Error: users are already friends"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new RequestResponseDTO(HttpStatus.FORBIDDEN.value(), "Error: users are already friends"));
         }
 
         boolean result = friendshipRequestService.sendRequest(senderId, receiverId);
 
         if (result) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponseDTO(201,"Request created successful!"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponseDTO(HttpStatus.CREATED.value(), "Request created successful!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Error creating friendship request!"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error creating friendship request!"));
     }
 
     @PostMapping(value = "/accept/{receiverId}/{requestId}")
@@ -55,13 +55,13 @@ public class FriendshipRequestController {
     	receiverToken = receiverToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(receiverToken, receiverId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized"));
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized"));
     	}
     	
     	if (friendshipRequestService.acceptFriendRequest(receiverId, requestId)) {
-            return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request accepted!"));
+            return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request accepted!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Unexpected error!"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Unexpected error!"));
     }
 
     @PostMapping(value = "/decline/{receiverId}/{requestId}")
@@ -70,12 +70,12 @@ public class FriendshipRequestController {
     	receiverToken = receiverToken.replace("Bearer ", "");
     	
     	if (!userService.checkIfTheTokenIsTheSameOfTheUser(receiverToken, receiverId)) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(401,"User unauthorized!"));
-    	}
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
+    	} 
     	
     	if (friendshipRequestService.declineFriendRequest(receiverId, requestId)) {
             return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request declined!"));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(500,"Unexpected error!"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unexpected error!"));
     }
 }

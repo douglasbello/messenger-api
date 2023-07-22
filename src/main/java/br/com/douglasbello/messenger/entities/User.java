@@ -5,23 +5,24 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.*;
+
+import br.com.douglasbello.messenger.entities.enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_users")
-public class User implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String username;
     private String password;
-    private String imgUrl;
-
+    private UserRole role;
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -30,36 +31,28 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<User> friends = new HashSet<>();
-
     @JsonIgnore
     @ManyToMany(mappedBy = "participants")
     private Set<Chat> chats = new HashSet<>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Message> messagesSent = new ArrayList<>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<Message> messagesReceived = new ArrayList<>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
     
-    private String token;
-
     public User() {
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        setToken();
     }
 
     public Integer getId() {
@@ -84,14 +77,6 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 
     public Set<User> getFriends() {
@@ -127,21 +112,16 @@ public class User implements Serializable {
     public List<Message> getMessagesReceived() {
         return messagesReceived;
     }
-    
-    public void setToken() {
-    	Random rd = new Random();
-    	StringBuilder sb = new StringBuilder();
-    	for (int i = 0; i < 16; i++) {
-    		sb.append(rd.nextInt(10));
-    	}
-    	token = sb.toString();
-    }
-    
-    public String getToken() {
-    	return token;
-    }
 
-    @Override
+    public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -156,8 +136,36 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
+    	
         return "id = " + id +
-                " username = " + username +
-                " imgUrl = " + imgUrl;
+                " username = " + username;
     }
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		if (this.role == UserRole.ADMIN) {
+			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+		}
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

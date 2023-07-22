@@ -112,20 +112,4 @@ public class ChatService {
             return false;
         }
     }
-    
-    @Transactional
-    public User getUserInChatByToken(String token, Integer chatId) {
-    	try {
-    		Chat chat = findById(chatId);
-    		for (User u : chat.getParticipants()) {
-    			if (u.getToken().equals(token)) {
-    				return u;
-    			}
-    		}
-    		
-    		return null;
-    	} catch (NoSuchElementException e) {
-    		return null;
-    	}
-    }
 }

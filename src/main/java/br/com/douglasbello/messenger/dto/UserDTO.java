@@ -1,16 +1,17 @@
 package br.com.douglasbello.messenger.dto;
 
 import br.com.douglasbello.messenger.entities.User;
+import br.com.douglasbello.messenger.entities.enums.UserRole;
 
 import java.util.*;
 
 public class UserDTO {
     private Integer id;
     private String username;
-    private String imgUrl;
+    private String password;
+    private UserRole role;
     private Set<Integer> friends = new HashSet<>();
     private Set<Integer> chats = new HashSet<>();
-    private String token;
 
     public UserDTO() {
     }
@@ -18,10 +19,10 @@ public class UserDTO {
     public UserDTO(User entity) {
         this.id = entity.getId();
         this.username = entity.getUsername();
-        this.imgUrl = entity.getImgUrl();
+        this.password = entity.getPassword();
+        this.role = entity.getRole();
         this.friends = entity.getFriendsIds();
         this.chats = entity.getChatsIds();
-        this.token = entity.getToken();
     }
 
     public Integer getId() {
@@ -40,31 +41,31 @@ public class UserDTO {
         this.username = username;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
     public Set<Integer> getFriends() {
         return friends;
     }
 
     public Set<Integer> getChats() {
         return chats;
-    }
+    }    
 
-    public String getToken() {
-        return token;
-    }
+    public UserRole getRole() {
+		return role;
+	}
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    @Override
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -75,16 +76,5 @@ public class UserDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", imgUrl='" + imgUrl + '\'' +
-                ", friends=" + friends +
-                ", token=" + token +
-                '}';
     }
 }

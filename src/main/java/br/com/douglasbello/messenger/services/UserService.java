@@ -8,6 +8,9 @@ import java.util.Set;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ import br.com.douglasbello.messenger.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -60,7 +63,6 @@ public class UserService {
     private void updateData(User entity, User obj) {
         entity.setUsername(obj.getUsername());
         entity.setPassword(obj.getPassword());
-        entity.setImgUrl(obj.getImgUrl());
     }
 
     public Set<User> getAllFriendsByUserId(Integer userId) {
@@ -86,14 +88,10 @@ public class UserService {
     }
 
     public boolean checkIfTheUsernameIsAlreadyUsed(String username) {
-        List<User> users = userRepository.findAll();
-
-        for (User obj : users) {
-            if (obj.getUsername().equals(username)) {
-                return true;
-            }
-        }
-        return false;
+    	if (userRepository.findUserByUsername(username) != null) {
+    		return true;
+    	}
+    	return false;
     }
 
     public void signIn(User user) {
@@ -122,19 +120,9 @@ public class UserService {
     		return null;
     	}
     }
-    
-    /* this method is used to check if the token passed is the same as the userId passed */
-    public boolean checkIfTheTokenIsTheSameOfTheUser(String token, Integer userId) {
-    	try {
-    		User sender = findById(userId);
-    		
-    		if (!sender.getToken().equals(token)) {
-    			return false;
-    		}
-    		
-    		return true;
-    	} catch (NoSuchElementException e) {
-    		return false;
-    	}
-    }
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return userRepository.findByUsername(username);
+	}
 }

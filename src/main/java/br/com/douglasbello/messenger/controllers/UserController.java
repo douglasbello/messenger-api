@@ -43,23 +43,17 @@ public class UserController {
 	@PostMapping(value = "/sign-in")
 	private ResponseEntity<RequestResponseDTO> signIn(@RequestBody UserDTO obj) {
 		if (obj.getUsername().length() < 4 || obj.getUsername().length() > 20) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(),
-							"Username cannot be less than 4 characters or more than 20 characters."));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "Username cannot be less than 4 characters or more than 20 characters."));
 		}
 		if (obj.getPassword().length() < 8 || obj.getPassword().length() > 100) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(),
-							"Password cannot be less than 8 characters or more than 100 characters."));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "Password cannot be less than 8 characters or more than 100 characters."));
 		}
 		boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
 		if (result) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(new RequestResponseDTO(HttpStatus.CONFLICT.value(), "Username is already in use!"));
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(HttpStatus.CONFLICT.value(), "Username is already in use!"));
 		}
 		if (obj.getChats().size() != 0 || obj.getFriends().size() != 0) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(
-					HttpStatus.BAD_REQUEST.value(), "You must not pass chats or friends ids in the sign in request."));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "You must not pass chats or friends ids in the sign in request."));
 		}
 		User user = new User();
 		user.setUsername(obj.getUsername());

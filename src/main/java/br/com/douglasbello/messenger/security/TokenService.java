@@ -18,7 +18,7 @@ import br.com.douglasbello.messenger.entities.User;
 public class TokenService {
 	@Value("${api.security.token.secret}")
 	public String SECRET_KEY;
-	public final String ISSUER = "douglasbello";
+	public final String ISSUER = "messenger-api";
 	
 	public String generateToken(User user) {
 		try {
@@ -45,15 +45,10 @@ public class TokenService {
 					.getSubject();
 		} catch (JWTVerificationException exception) {
 			return "";
+
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	private Instant generateExpiritationDate() {
 		return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
 	}

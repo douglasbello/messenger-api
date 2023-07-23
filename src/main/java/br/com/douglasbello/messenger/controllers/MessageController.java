@@ -1,7 +1,6 @@
 package br.com.douglasbello.messenger.controllers;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import br.com.douglasbello.messenger.dto.RequestResponseDTO;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,14 +27,14 @@ public class MessageController {
 	private final MessageService messageService;
 	private final UserService userService;
 	private final ChatService chatService;
-	
+
 	private MessageController(MessageService messageService, UserService userService, ChatService chatService) {
 		this.messageService = messageService;
 		this.userService = userService;
 		this.chatService = chatService;
 	}
 
-    @GetMapping(value = "/user/{userId}/chat/{chatId}/messages")
+    @GetMapping(value = "/users/{userId}/chat/{chatId}/messages")
     private ResponseEntity<?> listAllMessages(@PathVariable Integer userId, @PathVariable Integer chatId) {
     	if (userService.isCurrentUser(userService.findById(userId).getUsername())) {
     		Chat chat = chatService.findById(chatId);
@@ -49,7 +47,7 @@ public class MessageController {
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
     }
 
-    @PostMapping(value = "/user/{userId}/chat/{chatId}/messages/send")
+    @PostMapping(value = "/users/{userId}/chat/{chatId}/messages/send")
     private ResponseEntity<RequestResponseDTO> sendMessage(@PathVariable Integer userId, @PathVariable Integer chatId, @RequestBody String messageText) {
         if (chatService.findById(chatId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "Chat doesn't exists!"));

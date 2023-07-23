@@ -53,10 +53,8 @@ public class FriendshipRequestController {
     	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	User receiver = userService.findUserByUsername(auth.getUsername());
     	
-    	if (friendshipRequestService.acceptFriendRequest(receiver.getId(), requestId)) {
-            return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request accepted!"));
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Unexpected error!"));
+		return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request accepted!"));
+
     }
 
     @PostMapping(value = "/decline/{requestId}")
@@ -68,9 +66,6 @@ public class FriendshipRequestController {
     	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	User receiver = userService.findUserByUsername(auth.getUsername());
     	
-    	if (friendshipRequestService.declineFriendRequest(receiver.getId(), requestId)) {
-            return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request declined!"));
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unexpected error!"));
+		return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request declined!"));
     }
 }

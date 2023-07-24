@@ -16,7 +16,7 @@ import br.com.douglasbello.messenger.services.FriendshipRequestService;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
-@RequestMapping(value = "/users/friendship-requests")
+@RequestMapping(value = "/api/v1/users/friendship-requests")
 public class FriendshipRequestController {
 	private final UserService userService;
 	private final FriendshipRequestService friendshipRequestService;

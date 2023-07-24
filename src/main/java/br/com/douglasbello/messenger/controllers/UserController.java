@@ -17,7 +17,7 @@ import br.com.douglasbello.messenger.security.TokenService;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/v1/users")
 public class UserController {
 	private final UserService userService;
 	private final TokenService tokenService;

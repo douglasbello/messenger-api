@@ -22,7 +22,7 @@ import br.com.douglasbello.messenger.services.MessageService;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 public class MessageController {
 	private final MessageService messageService;
 	private final UserService userService;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ import br.com.douglasbello.messenger.services.MessageService;
 import br.com.douglasbello.messenger.services.UserService;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class MessageController {
 	private final MessageService messageService;
 	private final UserService userService;
@@ -34,17 +35,13 @@ public class MessageController {
 		this.chatService = chatService;
 	}
 
-    @GetMapping(value = "/users/{userId}/chat/{chatId}/messages")
-    private ResponseEntity<?> listAllMessages(@PathVariable Integer userId, @PathVariable Integer chatId) {
-    	if (userService.isCurrentUser(userService.findById(userId).getUsername())) {
-    		Chat chat = chatService.findById(chatId);
-    		List<Message> messages = chat.getMessages();
-    		List<MessageDTO> messagesDto = messages.stream().map(u -> new MessageDTO(u)).collect(Collectors.toList());
-    		
-    		return ResponseEntity.ok().body(messagesDto);
-    	}
-    	
-    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
+    @GetMapping(value = "/chat/{chatId}/messages")
+    private ResponseEntity<?> listAllMessages(@PathVariable Integer chatId) {
+		Chat chat = chatService.findById(chatId);
+		List<Message> messages = chat.getMessages();
+		List<MessageDTO> messagesDto = messages.stream().map(u -> new MessageDTO(u)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(messagesDto);    	
     }
 
     @PostMapping(value = "/users/{userId}/chat/{chatId}/messages/send")
@@ -57,11 +54,7 @@ public class MessageController {
         }
         Chat chat = chatService.findById(chatId);
 
-        if (!userService.isCurrentUser(userService.findById(userId).getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized!"));
-        }
-
-        User sender = userService.findById(userId);
+        User sender = userService.getCurrentUser();
         
         User receiver = new User();
         for (User participant : chat.getParticipants()) {

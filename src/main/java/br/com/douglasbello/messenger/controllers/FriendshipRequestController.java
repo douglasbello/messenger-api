@@ -28,11 +28,7 @@ public class FriendshipRequestController {
 	
 	@PostMapping(value = "/receiver/{receiverId}/send")
     private ResponseEntity<RequestResponseDTO> sendRequest(@PathVariable Integer receiverId) {
-    	if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized."));
-    	}
-    	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	User sender = userService.findUserByUsername(auth.getUsername());
+    	User sender = userService.getCurrentUser();
         if (friendshipRequestService.checkIfUserAlreadySentARequestToTheReceiver(sender.getId(), receiverId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(HttpStatus.CONFLICT.value(),"You already sent an friend request to this user."));
         }
@@ -46,12 +42,9 @@ public class FriendshipRequestController {
 
     @PostMapping(value = "/accept/{requestId}")
     private ResponseEntity<RequestResponseDTO> acceptRequest(@PathVariable Integer requestId) {
-        
-    	if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized."));
-    	}
-    	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	User receiver = userService.findUserByUsername(auth.getUsername());
+    	User receiver = userService.getCurrentUser();
+    	
+    	friendshipRequestService.acceptFriendRequest(receiver.getId(), requestId);
     	
 		return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request accepted!"));
 
@@ -59,13 +52,10 @@ public class FriendshipRequestController {
 
     @PostMapping(value = "/decline/{requestId}")
     private ResponseEntity<RequestResponseDTO> declineRequest(@PathVariable Integer requestId) {
+    	User receiver = userService.getCurrentUser();
     	
-    	if ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RequestResponseDTO(HttpStatus.UNAUTHORIZED.value(), "User unauthorized."));
-    	}
-    	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	User receiver = userService.findUserByUsername(auth.getUsername());
+    	friendshipRequestService.declineFriendRequest(receiver.getId(), requestId);
     	
-		return ResponseEntity.ok(new RequestResponseDTO(200,"Friendship request declined!"));
+		return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request declined!"));
     }
 }

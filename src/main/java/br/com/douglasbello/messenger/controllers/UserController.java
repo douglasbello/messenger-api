@@ -1,7 +1,5 @@
 package br.com.douglasbello.messenger.controllers;
 
-import java.util.NoSuchElementException;
-
 import br.com.douglasbello.messenger.dto.LoginDTO;
 import br.com.douglasbello.messenger.dto.RequestResponseDTO;
 import br.com.douglasbello.messenger.dto.TokenDTO;
@@ -10,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.douglasbello.messenger.entities.User;
@@ -29,15 +28,9 @@ public class UserController {
 		this.authenticationManager = authenticationManager;
 	}
 
-	@GetMapping(value = "/{id}")
-	private ResponseEntity<?> findUserById(@PathVariable Integer id) {
-		try {
-			User obj = userService.findById(id);
-			UserDTO response = new UserDTO(obj);
-			return ResponseEntity.ok().body(response);
-		} catch (NoSuchElementException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User doesn't exists!");
-		}
+	@GetMapping
+	private ResponseEntity<UserDTO> getCurrentUser() {
+        return ResponseEntity.ok().body(new UserDTO(userService.getCurrentUser()));
 	}
 
 	@PostMapping(value = "/sign-in")
@@ -48,8 +41,7 @@ public class UserController {
 		if (obj.getPassword().length() < 8 || obj.getPassword().length() > 100) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "Password cannot be less than 8 characters or more than 100 characters."));
 		}
-		boolean result = userService.checkIfTheUsernameIsAlreadyUsed(obj.getUsername());
-		if (result) {
+		if (userService.findUserByUsername(obj.getUsername()) != null) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(HttpStatus.CONFLICT.value(), "Username is already in use!"));
 		}
 		if (obj.getChats().size() != 0 || obj.getFriends().size() != 0) {

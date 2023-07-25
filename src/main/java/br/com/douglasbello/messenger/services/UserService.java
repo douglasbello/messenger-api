@@ -82,13 +82,6 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public boolean checkIfTheUsernameIsAlreadyUsed(String username) {
-    	if (userRepository.findUserByUsername(username) != null) {
-    		return true;
-    	}
-    	return false;
-    }
-
     public void signIn(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -110,9 +103,9 @@ public class UserService implements UserDetailsService {
         }
     }
     
-    public boolean isCurrentUser(String username) {
-    	User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	return currentUser.getUsername().equals(username);
+    public User getCurrentUser() {
+    	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	return findUserByUsername(auth.getUsername());
     }
 
 	@Override

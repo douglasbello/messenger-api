@@ -1,6 +1,6 @@
 package br.com.douglasbello.messenger.services;
 
-import br.com.douglasbello.messenger.dto.LoginDTO;
+import br.com.douglasbello.messenger.dto.UserInputDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.repositories.UserRepository;
@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean login(LoginDTO dto) {
+    public boolean login(UserInputDTO dto) {
         if ( userRepository.findUserByUsername(dto.username()) == null ) {
             return false;
         }

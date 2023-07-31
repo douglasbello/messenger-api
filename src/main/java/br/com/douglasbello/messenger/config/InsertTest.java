@@ -29,7 +29,7 @@ public class InsertTest implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        User user1 = new User("user01", "user01");
+        User user1 = new User("username01", "username01");
         User user2 = new User("user02", "user02");
         User user3 = new User("douglas", "douglas");
         User user4 = new User("maria", "maria");

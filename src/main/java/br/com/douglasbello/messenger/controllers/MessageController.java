@@ -37,13 +37,10 @@ public class MessageController {
         return ResponseEntity.ok().body(messagesDto);
     }
 
-    @PostMapping( value = "/users/{userId}/chat/{chatId}/messages/send" )
-    private ResponseEntity<RequestResponseDTO> sendMessage(@PathVariable Integer userId, @PathVariable Integer chatId, @RequestBody String messageText) {
+    @PostMapping( value = "/chat/{chatId}/messages/send" )
+    private ResponseEntity<RequestResponseDTO> sendMessage(@PathVariable Integer chatId, @RequestBody String messageText) {
         if ( chatService.findById(chatId) == null ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "Chat doesn't exists!"));
-        }
-        if ( userService.findById(userId) == null ) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "User doesn't exists."));
         }
         Chat chat = chatService.findById(chatId);
 

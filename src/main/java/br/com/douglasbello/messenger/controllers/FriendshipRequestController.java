@@ -43,7 +43,6 @@ public class FriendshipRequestController {
         friendshipRequestService.acceptFriendRequest(receiver.getId(), requestId);
 
         return ResponseEntity.ok(new RequestResponseDTO(HttpStatus.OK.value(), "Friendship request accepted!"));
-
     }
 
     @PostMapping( value = "/decline/{requestId}" )

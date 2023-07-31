@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/users/login")
+                .requestMatchers(HttpMethod.POST, "/api/v1/users/login")
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/sign-in")
                 .permitAll()

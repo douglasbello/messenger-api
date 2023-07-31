@@ -12,14 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ChatService {
     private final ChatRepository chatRepository;
 
     private final MessageService messageService;
-    
+
     private final UserService userService;
 
     public ChatService(ChatRepository chatRepository, MessageService messageService, UserService userService) {
@@ -28,7 +27,7 @@ public class ChatService {
         this.userService = userService;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional( readOnly = true )
     public List<ChatDTO> findAll() {
         List<Chat> result = chatRepository.findAll();
         return result.stream().map(ChatDTO::new).toList();
@@ -45,7 +44,7 @@ public class ChatService {
             User firstUser = userService.findById(firstUserId);
             User secondUser = userService.findById(secondUserId);
 
-            if (firstUser == null || secondUser == null) {
+            if ( firstUser == null || secondUser == null ) {
                 return false;
             }
 
@@ -54,7 +53,7 @@ public class ChatService {
             chat.getParticipants().add(secondUser);
             chatRepository.save(chat);
             return true;
-        } catch (NoSuchElementException e) {
+        } catch ( NoSuchElementException e ) {
             return false;
         }
     }
@@ -68,10 +67,10 @@ public class ChatService {
     public ChatDTO update(Integer id, Chat obj) {
         try {
             Chat entity = chatRepository.getReferenceById(id);
-            updateData(entity,obj);
+            updateData(entity, obj);
             return new ChatDTO(chatRepository.save(entity));
-        } catch (EntityNotFoundException e) {
-           throw new EntityNotFoundException();
+        } catch ( EntityNotFoundException e ) {
+            throw new EntityNotFoundException();
         }
     }
 
@@ -81,20 +80,20 @@ public class ChatService {
         chat.getMessages().add(message);
         update(chat.getId(), chat);
     }
-    
+
     public boolean checkIfAChatBetweenUsersAlreadyExists(Integer firstUserId, Integer secondUserId) {
-    	List<Chat> chats = chatRepository.findAll();
-    	
-    	for (Chat chat : chats) {
-    		User firstUser = userService.findById(firstUserId);
-    		User secondUser = userService.findById(secondUserId);
-    		
-    		if (chat.getParticipants().contains(firstUser) && chat.getParticipants().contains(secondUser)) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
+        List<Chat> chats = chatRepository.findAll();
+
+        for ( Chat chat : chats ) {
+            User firstUser = userService.findById(firstUserId);
+            User secondUser = userService.findById(secondUserId);
+
+            if ( chat.getParticipants().contains(firstUser) && chat.getParticipants().contains(secondUser) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean checkIfTheChatContainsBothUsers(Integer chatId, Integer user1, Integer user2) {
@@ -103,12 +102,12 @@ public class ChatService {
             User sender = userService.findById(user1);
             User receiver = userService.findById(user2);
 
-            if (!chat.getParticipants().contains(sender) && !chat.getParticipants().contains(receiver)) {
+            if ( !chat.getParticipants().contains(sender) && !chat.getParticipants().contains(receiver) ) {
                 return false;
             }
 
             return true;
-        } catch (NoSuchElementException e) {
+        } catch ( NoSuchElementException e ) {
             return false;
         }
     }

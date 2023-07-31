@@ -1,14 +1,10 @@
 package br.com.douglasbello.messenger.services;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-
 import br.com.douglasbello.messenger.dto.LoginDTO;
 import br.com.douglasbello.messenger.dto.UserDTO;
+import br.com.douglasbello.messenger.entities.User;
+import br.com.douglasbello.messenger.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,10 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import br.com.douglasbello.messenger.entities.User;
-import br.com.douglasbello.messenger.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -35,26 +33,18 @@ public class UserService implements UserDetailsService {
         return result.stream().map(UserDTO::new).toList();
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
     public User findById(Integer id) {
         Optional<User> obj = userRepository.findById(id);
         return obj.get();
-    }
-
-    public void insertAll(List<User> users) {
-        userRepository.saveAll(users);
     }
 
     @Transactional
     public User update(Integer id, User obj) {
         try {
             User entity = userRepository.getReferenceById(id);
-            updateData(entity,obj);
+            updateData(entity, obj);
             return userRepository.save(entity);
-        } catch (EntityNotFoundException e) {
+        } catch ( EntityNotFoundException e ) {
             throw new RuntimeException();
         }
     }
@@ -67,16 +57,16 @@ public class UserService implements UserDetailsService {
     public Set<User> getAllFriendsByUserId(Integer userId) {
         return userRepository.findFriendsById(userId);
     }
-    
+
     public long count() {
-    	return userRepository.count();
+        return userRepository.count();
     }
 
     public boolean checkIfUsersAreAlreadyFriends(Integer senderId, Integer receiverId) {
         User sender = findById(senderId);
         User receiver = findById(receiverId);
 
-        if (sender.getFriends().contains(receiver)) {
+        if ( sender.getFriends().contains(receiver) ) {
             return true;
         }
         return false;
@@ -88,8 +78,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean login(LoginDTO dto) {
-        if (userRepository.findUserByUsername(dto.username()) == null) {
-        	return false;
+        if ( userRepository.findUserByUsername(dto.username()) == null ) {
+            return false;
         }
         return passwordEncoder.matches(dto.password(), userRepository.findUserByUsername(dto.username()).getPassword());
     }
@@ -98,18 +88,18 @@ public class UserService implements UserDetailsService {
         try {
             User obj = userRepository.findUserByUsername(username);
             return obj;
-        } catch (NoSuchElementException e) {
+        } catch ( NoSuchElementException e ) {
             return null;
         }
     }
-    
+
     public User getCurrentUser() {
-    	User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	return findUserByUsername(auth.getUsername());
+        User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return findUserByUsername(auth.getUsername());
     }
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByUsername(username);
-	}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
+    }
 }

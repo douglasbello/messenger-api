@@ -3,7 +3,9 @@ package br.com.douglasbello.messenger.dto;
 import br.com.douglasbello.messenger.entities.User;
 import br.com.douglasbello.messenger.entities.enums.UserRole;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class UserDTO {
     private Integer id;
@@ -47,28 +49,28 @@ public class UserDTO {
 
     public Set<Integer> getChats() {
         return chats;
-    }    
+    }
 
     public UserRole getRole() {
-		return role;
-	}
+        return role;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setRole(UserRole role) {
-		this.role = role;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	@Override
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         UserDTO userDTO = (UserDTO) o;
         return Objects.equals(id, userDTO.id);
     }

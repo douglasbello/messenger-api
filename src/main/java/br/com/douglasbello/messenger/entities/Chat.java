@@ -1,6 +1,5 @@
 package br.com.douglasbello.messenger.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -8,22 +7,22 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
-@Table(name = "tb_chats")
+@Table( name = "tb_chats" )
 public class Chat implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer id;
 
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "chat", cascade = CascadeType.ALL )
     private List<Message> messages = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "tb_chats_and_participants",
-            joinColumns = @JoinColumn(name = "chat_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn( name = "chat_id" ),
+            inverseJoinColumns = @JoinColumn( name = "user_id" )
     )
     private Set<User> participants = new HashSet<>();
 
@@ -52,8 +51,8 @@ public class Chat implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         Chat chat = (Chat) o;
         return Objects.equals(id, chat.id);
     }

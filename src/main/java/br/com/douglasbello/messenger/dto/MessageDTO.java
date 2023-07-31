@@ -1,6 +1,5 @@
 package br.com.douglasbello.messenger.dto;
 
-import br.com.douglasbello.messenger.entities.Chat;
 import br.com.douglasbello.messenger.entities.Message;
 import br.com.douglasbello.messenger.entities.User;
 
@@ -77,8 +76,8 @@ public class MessageDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         MessageDTO that = (MessageDTO) o;
         return Objects.equals(id, that.id);
     }

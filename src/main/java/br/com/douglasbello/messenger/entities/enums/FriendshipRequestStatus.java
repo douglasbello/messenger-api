@@ -11,16 +11,16 @@ public enum FriendshipRequestStatus {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static FriendshipRequestStatus valueOf(int code) {
-        for (FriendshipRequestStatus value : FriendshipRequestStatus.values()) {
-            if (value.getCode() == code) {
+        for ( FriendshipRequestStatus value : FriendshipRequestStatus.values() ) {
+            if ( value.getCode() == code ) {
                 return value;
             }
         }
         throw new IllegalArgumentException("Invalid FriendshipRequestStatus code.");
+    }
+
+    public int getCode() {
+        return code;
     }
 }

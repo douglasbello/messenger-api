@@ -6,17 +6,17 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_friendship_request")
+@Table( name = "tb_friendship_request" )
 public class FriendshipRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn( name = "sender_id" )
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn( name = "receiver_id" )
     private User receiver;
 
     private Integer status;
@@ -60,15 +60,15 @@ public class FriendshipRequest {
     }
 
     public void setStatus(FriendshipRequestStatus status) {
-        if (status != null) {
+        if ( status != null ) {
             this.status = status.getCode();
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         FriendshipRequest that = (FriendshipRequest) o;
         return Objects.equals(id, that.id);
     }

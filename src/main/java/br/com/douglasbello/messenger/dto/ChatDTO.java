@@ -40,8 +40,8 @@ public class ChatDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         ChatDTO chatDTO = (ChatDTO) o;
         return Objects.equals(id, chatDTO.id);
     }

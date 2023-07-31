@@ -7,26 +7,26 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_messages")
+@Table( name = "tb_messages" )
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer id;
     private String messageText;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn( name = "sender_id" )
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn( name = "receiver_id" )
     private User receiver;
 
     private LocalDateTime sentAt;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "chat_id")
+    @JoinColumn( name = "chat_id" )
     private Chat chat;
 
     public Message() {
@@ -40,7 +40,7 @@ public class Message {
         this.chat = chat;
         this.sentAt = LocalDateTime.now();
     }
-    
+
     public Message(String messageText, User sender, User receiver) {
         this.messageText = messageText;
         this.sender = sender;
@@ -92,15 +92,15 @@ public class Message {
     public Chat getChat() {
         return chat;
     }
-    
+
     public void setChat(Chat chat) {
-    	this.chat = chat;
+        this.chat = chat;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         Message message = (Message) o;
         return id == message.id;
     }

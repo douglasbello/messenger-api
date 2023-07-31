@@ -1,22 +1,20 @@
 package br.com.douglasbello.messenger.entities;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import br.com.douglasbello.messenger.entities.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.*;
-
-import br.com.douglasbello.messenger.entities.enums.UserRole;
-import jakarta.persistence.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "tb_users")
+@Table( name = "tb_users" )
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer id;
     private String username;
     private String password;
@@ -25,26 +23,26 @@ public class User implements UserDetails {
     @ManyToMany
     @JoinTable(
             name = "tb_user_friends",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
+            joinColumns = @JoinColumn( name = "user_id" ),
+            inverseJoinColumns = @JoinColumn( name = "friend_id" )
     )
     private Set<User> friends = new HashSet<>();
     @JsonIgnore
-    @ManyToMany(mappedBy = "participants")
+    @ManyToMany( mappedBy = "participants" )
     private Set<Chat> chats = new HashSet<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "sender", cascade = CascadeType.ALL )
     private List<Message> messagesSent = new ArrayList<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "receiver", cascade = CascadeType.ALL )
     private List<Message> messagesReceived = new ArrayList<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "sender", cascade = CascadeType.ALL )
     private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "receiver", cascade = CascadeType.ALL )
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
-    
+
     public User() {
     }
 
@@ -112,17 +110,17 @@ public class User implements UserDetails {
     }
 
     public UserRole getRole() {
-		return role;
-	}
+        return role;
+    }
 
-	public void setRole(UserRole role) {
-		this.role = role;
-	}
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
-	@Override
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
         User user = (User) o;
         return Objects.equals(id, user.id);
     }
@@ -138,31 +136,31 @@ public class User implements UserDetails {
                 " username = " + username;
     }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN) {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if ( this.role == UserRole.ADMIN ) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-	}
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

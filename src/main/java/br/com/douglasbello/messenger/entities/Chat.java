@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
-@Table( name = "tb_chats" )
+@Table( name = "chats" )
 public class Chat implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,7 +20,7 @@ public class Chat implements Serializable {
 
     @ManyToMany
     @JoinTable(
-            name = "tb_chats_and_participants",
+            name = "chats_and_participants",
             joinColumns = @JoinColumn( name = "chat_id" ),
             inverseJoinColumns = @JoinColumn( name = "user_id" )
     )

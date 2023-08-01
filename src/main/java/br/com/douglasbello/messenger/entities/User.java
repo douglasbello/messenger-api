@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table( name = "tb_users" )
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "tb_user_friends",
+            name = "user_friends",
             joinColumns = @JoinColumn( name = "user_id" ),
             inverseJoinColumns = @JoinColumn( name = "friend_id" )
     )

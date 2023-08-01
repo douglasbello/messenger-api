@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table( name = "tb_friendship_request" )
+@Table( name = "friendship_request" )
 public class FriendshipRequest {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping( "/api/v1" )
+@RequestMapping("/api/v1")
 public class MessageController {
     private final MessageService messageService;
     private final UserService userService;
@@ -28,27 +28,26 @@ public class MessageController {
         this.chatService = chatService;
     }
 
-    @GetMapping( value = "/chat/{chatId}/messages" )
+    @GetMapping(value = "/chat/{chatId}/messages")
     private ResponseEntity<?> listAllMessages(@PathVariable Integer chatId) {
         Chat chat = chatService.findById(chatId);
         List<Message> messages = chat.getMessages();
-        List<MessageDTO> messagesDto = messages.stream().map(u -> new MessageDTO(u)).collect(Collectors.toList());
+        List<MessageDTO> messagesDto = messages.stream().map(MessageDTO::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(messagesDto);
     }
 
-    @PostMapping( value = "/chat/{chatId}/messages/send" )
+    @PostMapping(value = "/chat/{chatId}/messages/send")
     private ResponseEntity<RequestResponseDTO> sendMessage(@PathVariable Integer chatId, @RequestBody String messageText) {
-        if ( chatService.findById(chatId) == null ) {
+        if (chatService.findById(chatId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RequestResponseDTO(HttpStatus.NOT_FOUND.value(), "Chat doesn't exists!"));
         }
+
         Chat chat = chatService.findById(chatId);
-
         User sender = userService.getCurrentUser();
-
         User receiver = new User();
-        for ( User participant : chat.getParticipants() ) {
-            if ( participant != sender ) {
+        for (User participant : chat.getParticipants()) {
+            if (participant != sender) {
                 receiver = participant;
             }
         }

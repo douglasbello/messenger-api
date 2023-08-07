@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String username;
     private String password;
@@ -23,24 +23,24 @@ public class User implements UserDetails {
     @ManyToMany
     @JoinTable(
             name = "user_friends",
-            joinColumns = @JoinColumn( name = "user_id" ),
-            inverseJoinColumns = @JoinColumn( name = "friend_id" )
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<User> friends = new HashSet<>();
     @JsonIgnore
-    @ManyToMany( mappedBy = "participants" )
+    @ManyToMany(mappedBy = "participants")
     private Set<Chat> chats = new HashSet<>();
     @JsonIgnore
-    @OneToMany( mappedBy = "sender", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Message> messagesSent = new ArrayList<>();
     @JsonIgnore
-    @OneToMany( mappedBy = "receiver", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<Message> messagesReceived = new ArrayList<>();
     @JsonIgnore
-    @OneToMany( mappedBy = "sender", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsSent = new HashSet<>();
     @JsonIgnore
-    @OneToMany( mappedBy = "receiver", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<FriendshipRequest> friendshipRequestsReceived = new HashSet<>();
 
     public User() {
@@ -49,6 +49,12 @@ public class User implements UserDetails {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, UserRole role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public Integer getId() {
@@ -119,8 +125,8 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id);
     }
@@ -138,7 +144,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if ( this.role == UserRole.ADMIN ) {
+        if (this.role == UserRole.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));

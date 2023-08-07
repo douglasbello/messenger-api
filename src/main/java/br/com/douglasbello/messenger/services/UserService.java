@@ -72,9 +72,9 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public void signIn(User user) {
+    public User signIn(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public boolean login(UserInputDTO dto) {

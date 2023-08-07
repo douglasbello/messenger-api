@@ -37,22 +37,15 @@ public class UserController {
     }
 
     @PostMapping(value = "/sign-in")
-    private ResponseEntity<RequestResponseDTO> signIn(@RequestBody UserInputDTO obj) {
-        if (obj.username().length() < 4 || obj.username().length() > 20) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "Username cannot be less than 4 characters or more than 20 characters."));
-        }
+    private ResponseEntity<?> signIn(@Valid @RequestBody UserInputDTO obj) {
+
         if (userService.findUserByUsername(obj.username()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new RequestResponseDTO(HttpStatus.CONFLICT.value(), "Username is already in use!"));
         }
-//        if (obj.getChats().size() != 0 || obj.getFriends().size() != 0) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RequestResponseDTO(HttpStatus.BAD_REQUEST.value(), "You must not pass chats or friends ids in the sign in request."));
-//        }
-        User user = new User();
-        user.setUsername(obj.username());
-        user.setPassword(obj.password());
-        user.setRole(UserRole.USER);
-        userService.signIn(user);
-        return ResponseEntity.ok().body(new RequestResponseDTO(HttpStatus.OK.value(), "Account created successfully!"));
+
+        User user = new User(obj.username(), obj.password(), UserRole.USER);
+        UserDTO response = new UserDTO(userService.signIn(user));
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping(value = "/login")
